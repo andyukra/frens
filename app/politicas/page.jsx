@@ -15,7 +15,7 @@ export default function Politicas() {
         a través de terceros como redes de anuncios. Puedes desactivar las
         cookies en cualquier momento desde la configuración de tu navegador.
         Formularios y Chismes Anónimos: Si utilizas nuestros formularios de
-        contacto o buzones para enviar información, sugerencias o "chismes", nos
+        contacto o buzones para enviar información, sugerencias o &quot;chismes&quot;, nos
         reservamos el derecho de evaluar el contenido sin almacenar tus datos de
         identidad, a menos que sea estrictamente necesario. Enlaces a Terceros:
         Nuestro sitio contiene enlaces a redes sociales y otras páginas web
