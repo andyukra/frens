@@ -19,7 +19,7 @@ moment.locale("es");
       )
     } else {
       return (
-        <p className="font-bold p-3 rounded-lg bg-[#fff3] break-word">
+        <p className="p-3 rounded-lg bg-slate-100 text-black break-word">
           {msg}
         </p>
       )
@@ -42,7 +42,7 @@ function Empty() {
     <main className="w-full h-[calc(100dvh-64px-1rem)] flex flex-col gap-5 justify-center items-center">
       <h1 className="text-4xl font-bold">No se ha encontrado</h1>
       <Link
-        className="py-2 px-4 font-bold bg-orange-500 text-white rounded w-[200px] text-center animate-pulse"
+        className="py-2 px-4 font-bold bg-black text-white rounded w-[200px] text-center animate-pulse"
         href="/home"
       >
         Volver
@@ -58,7 +58,7 @@ export default async function pub({ searchParams }) {
   const pub = await getPub(id);
   if (pub === "EMPTY") return <Empty />;
   return (
-    <main className="pb-5 md:w-8/12 md:mx-auto w-full flex flex-col md:flex-row justify-center items-stretch gap-5 h-[calc(100dvh - 100px)]">
+    <main className="text-black pb-5 md:w-8/12 md:mx-auto w-full flex flex-col md:flex-row justify-center items-stretch gap-5 h-[calc(100dvh - 100px)]">
       {/* CONTENT SECTION */}
       <Link href="/home" className="md:ml-0 ml-5">
         <FaArrowLeft size={30} />
@@ -87,7 +87,7 @@ export default async function pub({ searchParams }) {
           </div>
           {/* BODY OF CARD */}
           <div className="flex-grow flex flex-col gap-2">
-            <h1 className="p-4 text-center bg-[var(--tertiary)] text-xl font-bold rounded border-l-8 border-cyan-400 border-solid">
+            <h1 className="p-4 text-center text-xl font-bold rounded border-l-8 border-cyan-400 bg-black text-white border-solid">
               {pub.title}
             </h1>
             <div className="flex justify-center items-center flex-grow">
@@ -115,7 +115,7 @@ export default async function pub({ searchParams }) {
             </div>
           </div>
           {pub.description && (
-            <p className="mt-3 w-full p-4 rounded-lg bg-[var(--secondary)]">
+            <p className="mt-3 w-full p-4 rounded-lg bg-slate-200">
               {pub.description}
             </p>
           )}
@@ -124,7 +124,7 @@ export default async function pub({ searchParams }) {
       {/* SOCIAL SECTION */}
       <section className="w-full" style={{ flex: 1 }}>
         <article className="shadow-lg w-full h-full p-4 backdrop-blur-lg rounded-lg flex-shrink flex flex-col items-center justify-between">
-          <h1 className="pb-4 md:pb-2 mb-2 text-2xl font-bold text-center border-b-4 border-cyan-500 border-solid">
+          <h1 className="pb-4 md:pb-2 mb-2 text-2xl font-bold text-center border-b-4 border-black border-solid">
             Comentarios
           </h1>
           {/* COMENTARY BOX */}
@@ -136,10 +136,6 @@ export default async function pub({ searchParams }) {
             ) : (
               pub.comments.reverse().map((elem, key) => (
                 <article
-                  style={{
-                    background:
-                      "linear-gradient(-45deg, transparent 70% ,#f0f7 )",
-                  }}
                   key={key}
                   className="my-4 py-2 px-4 rounded-lg shadow-md"
                 >

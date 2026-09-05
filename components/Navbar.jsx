@@ -49,7 +49,7 @@ export default function Navbar() {
       className="h-[70px] z-[100] flex items-center md:px-10 px-4 justify-between backdrop-blur-md shadow-md"
     >     
       <Link href="/home?page=1" className={`${lobster.className} flex items-center gap-4`}>
-        <h1 className="text-2xl font-bold">frenss</h1>
+        <h1 className="text-2xl font-bold text-black">frens</h1>
       </Link>
       {params === "/home" && <Searcher />}
       {status === 'authenticated' ? (
@@ -58,7 +58,7 @@ export default function Navbar() {
             {!avatar ? <FaUser /> : (
               <img
                 onClick={() => setDropdown(!dropdown)}
-                className="rounded-full cursor-pointer shadow w-12 h-12"
+                className="rounded-full cursor-pointer shadow w-12 h-12 ring-1 ring-slate-950"
                 src={avatar}
                 alt="avatar"
               />
@@ -117,7 +117,7 @@ export default function Navbar() {
           </li>
         </ul>
       ) : (
-        <button onClick={() => signIn("google")} className="font-bold">
+        <button onClick={() => signIn("google")} className="font-bold text-black">
           Log In
         </button>
       )}

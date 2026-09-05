@@ -21,7 +21,7 @@ const pathVariants = {
 
 export default function loading() {
   return (
-    <section className="flex justify-center items-center h-[100dvh] bg-orange-400 fixed top-0 left-0 w-full z-[100]">
+    <section className="flex justify-center items-center h-[100dvh] bg-black fixed top-0 left-0 w-full z-[100]">
       <motion.svg 
       initial="hidden"
       animate="visible"

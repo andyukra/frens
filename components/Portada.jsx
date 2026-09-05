@@ -15,14 +15,10 @@ const daily = await Pubs.findById(dailyPub);
 export default function Portada() {
   return (
     <section
-      style={{
-        transition: "0.3s",
-        background: 'linear-gradient(45deg, rgba(255, 0, 255, 0.6), rgba(255, 255, 0, 0.6))'
-      }}
-      className="w-full rounded-lg backdrop-blur-md shadow-lg p-3 flex flex-col justify-center items-center gap-5"
+      className="w-full p-3 flex flex-col justify-center items-center gap-5"
     >
       <h2
-        className={`${lobster.className} font-bold text-5xl text-center rounded-md bg-gradient-to-r from-orange-200 via-blue-300 to-pink-600 bg-clip-text text-transparent inline-block`}>Portada del día</h2>
+        className={`${lobster.className} font-bold text-5xl text-center text-black`}>Portada del día</h2>
       <div className="m-h-[80dvh] overflow-y-auto">
         <Pub data={JSON.stringify(daily)} type="portada"/>
       </div>

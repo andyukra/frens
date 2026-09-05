@@ -4,10 +4,10 @@ import { FaShareNodes } from "react-icons/fa6";
 import Toast from "@/components/Toast";
 import { useState } from 'react';
 
-export default function Clipboard({ pubId, color = "white" }) {
+export default function Clipboard({ pubId, color = "black" }) {
     //HOOKS
     const [state, setState] = useState(false);
-  const url = `https://frenss.online/pub?id=${pubId}`;
+  const url = `https://frens.site/pub?id=${pubId}`;
   return (
     <>
         {state && (<Toast msg={'Link copiado, lo puede pegar donde quiera'}/>)}

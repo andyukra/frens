@@ -8,10 +8,10 @@ export default function Extras({ extras }) {
   const extrasParsed = JSON.parse(extras);
   return (
     <>
-      <h2 className="text-2xl font-bold text-center tracking-widest p-5 bg-lime-500 w-full rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-center tracking-widest p-5 bg-black w-full rounded-lg shadow-md">
         Los mas visitados
       </h2>
-      <section className="overflow-x-hidden md:h-[550px] h-[400px] p-5 rounded-xl shadow-md backdrop-blur-md" style={{background: "linear-gradient(45deg, #f0f9, #ff09)"}}>
+      <section className="overflow-x-hidden md:h-[550px] h-[400px] p-5 shadow-md">
         <motion.div
           initial={{ x: "-100%" }}
           onHoverStart={anim.stop()}

@@ -78,14 +78,14 @@ export default function ComentsForm({pubId}) {
           maxLength="500"
           minLength="1"
           required
-          className={`w-full py-2 px-4 rounded-lg focus:outline-none text-slate-950 ${commentTxt.length > 500 && 'ring-2 ring-red-600 bg-red-200'}`}
+          className={`bg-slate-300 w-full py-2 px-4 rounded-lg focus:outline-none text-slate-950 ${commentTxt.length > 500 && 'ring-2 ring-red-600 bg-red-200'}`}
           value={commentTxt}
           onChange={(e) => setCommentTxt(e.target.value)}
           disabled={status == 'unauthenticated' ? true : false}
         />
         <input type="file" id={pubId} hidden accept="image/*" onChange={e => upComment(e, 'IMG')}/>
         <label htmlFor={pubId} className="">
-          <FaImage className="text-white cursor-pointer size-5"/>
+          <FaImage className="text-black cursor-pointer size-5"/>
         </label>
       </div>
       {loaderComment ? (
@@ -93,7 +93,7 @@ export default function ComentsForm({pubId}) {
       ) : (
         <button className={`${status == 'unauthenticated' && 'pointer-events-none'}`}>
           <FaPaperPlane
-            color="white"
+            color="black"
             size={20}
             className='cursor-pointer hover:animate-pulse'
           />

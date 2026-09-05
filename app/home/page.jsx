@@ -7,7 +7,6 @@ import Extras from "@/components/Extras";
 import Filters from "@/components/Filters";
 import Portada from "@/components/Portada";
 import Portrait from "@/components/Portrait";
-import Chat from "@/components/Chat";
 
 export const metadata = {
   title: "frens - home",
@@ -61,22 +60,9 @@ function getUser(author) {
 //INIT
 export default async function Home({ searchParams }) {
   //RENDER EXTRAS TO PUB LIST
-  function renderPubs() {
-    let count = 0;
-    return async function ext(elem, key) {
-      count++;
-      if (count % 10 !== 0) {
-        return <Pub data={JSON.stringify(elem)} key={key} />;
-      } else {
-        const extrasPubs = await extrasPublications();
-        return (
-          <>
-            <Pub data={JSON.stringify(elem)} key={key} />
-            <Extras extras={JSON.stringify(extrasPubs)} />
-          </>
-        );
-      }
-    };
+  async function extraPubs() {
+    const extrasPubs = await extrasPublications();
+    return <Extras extras={JSON.stringify(extrasPubs)} />
   }
   //FILTER PARAMS
   function filtroPage() {
@@ -101,13 +87,13 @@ export default async function Home({ searchParams }) {
   const search = filtroSearch();
   const authorPage = filtroAuthor();
   const { pubs, count } = await getData(page, search, authorPage);
-  const x = renderPubs();
+  // const x = renderPubs();
 
   return (
     <main className="px-2">
       {authorPage !== 'all' ? (
         <>
-        <h1 className="text-center text-2xl font-bold my-5 bg-amber-500 py-2 shadow-md">{authorPage}</h1>
+        <h1 className="text-center text-2xl font-bold my-5 bg-black py-2 shadow-md">{authorPage}</h1>
         <Portrait portrait={getUser(authorPage)?.portrait} avatar={getUser(authorPage)?.image} author={authorPage}/>
         </>
       ) : ''}
@@ -115,22 +101,24 @@ export default async function Home({ searchParams }) {
         <div id="filters" className="md:w-3/12 w-12/12">
           <Filters url={searchParams.author} users={JSON.stringify(users)}/>
         </div>
-        <div className="flex flex-col gap-5 md:w-6/12 w-full" id="pubs">
+        <div className="flex flex-col gap-5 md:w-9/12 w-full" id="pubs">
           <div className="w-full">
             <Portada />
           </div>
           {search && (
-            <h1 className="text-center text-xl lg:text-2xl font-bold">
+            <h1 className="text-center text-black text-xl lg:text-2xl font-bold">
               {count} resultados encontrados para{" "}
-              <span className="text-2xl lg:text-3xl font-bold text-yellow-300">
+              <span className="text-2xl lg:text-3xl font-bold text-slate-800">
                 {search}
               </span>
             </h1>
           )}
-          {pubs.map((elem, key) => x(elem, key))}
-        </div>
-        <div className="w-3/12 hidden md:block">
-          <Chat />
+          <div className="lg:columns-3 md:columns-2 break-inside-avoid">
+            {pubs.map((elem, key) => {
+              return <Pub data={JSON.stringify(elem)} key={key} />
+            })}
+          </div>
+          {extraPubs()}
         </div>
       </section>
       <Pagination total={count} docs={docsPerPage} />

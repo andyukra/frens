@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>Frenss</title>
+        <title>Frens</title>
         <script
           src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"
           async=""

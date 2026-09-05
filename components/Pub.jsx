@@ -46,11 +46,11 @@ export default function Pub({ data, type }) {
   function filterMsg(msg) {
     if(/.*\.(jpg|gif|png|jpeg|tiff|heif|bmp|webp)$/i.test(msg)) {
       return (
-        <img src={msg} alt="comentario con imagen" className="max max-w-[350px] max-h-[500px] rounded-lg drop-shadow-md"/>
+        <img src={msg} alt="comentario con imagen" className="max max-w-[250px] max-h-[300px] rounded-lg drop-shadow-md"/>
       )
     } else {
       return (
-        <p className="font-bold p-3 rounded-lg bg-[#fff4] break-word">
+        <p className="font-bold p-3 rounded-lg bg-slate-200 text-black break-word">
           {msg}
         </p>
       )
@@ -84,10 +84,10 @@ export default function Pub({ data, type }) {
 
   return (
     <article
-      style={{background: 'linear-gradient(-45deg, rgba(255, 0, 255, 0.6), rgba(255, 255, 0, 0.6))'}}
-      className={`flex justify-center flex-col w-full backdrop-blur-lg rounded-lg bg-[#0001] shadow-lg`}
+      style={{ cornerShape: 'squircle', borderRadius: '1rem' }}
+      className={`my-4 inline-block w-full shadow-md bg-[#fafafa]`}
     >
-      <div className="flex items-center justify-between py-2 pl-2 pr-4 ">
+      <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[1px] border-solid border-slate-300">
         <div className="flex gap-3 items-center">
           <div className="md:w-[50px] md:h-[50px] w-[40px] h-[40px]">
             <img
@@ -98,10 +98,10 @@ export default function Pub({ data, type }) {
             />
           </div>
           <div className="flex flex-col">
-            <p className="md:text-xl text-md font-bold drop-shadow">
+            <p className="md:text-xl text-md font-semibold text-slate-800">
               {data.author}
             </p>
-            <p className="text-sm md:text-md">{moment(data.date).fromNow()}</p>
+            <p className="text-sm md:text-md text-slate-500">{moment(data.date).fromNow()}</p>
           </div>
         </div>
         <div className="relative">
@@ -139,14 +139,14 @@ export default function Pub({ data, type }) {
             )}
             <li
               onClick={() => setOpts(false)}
-              className="cursor-pointer hover:bg-slate-950 bg-slate-700 rounded w-full flex justify-center p-1"
+              className="cursor-pointer bg-black rounded w-full flex justify-center p-1"
             >
               <p className="font-bold text-md text-white">Cancelar</p>
             </li>
           </motion.ul>
           <FaEllipsis
             onClick={() => setOpts(!opts)}
-            color="white"
+            color="black"
             size={25}
             className="cursor-pointer hover:animate-pulse"
           />
@@ -156,13 +156,12 @@ export default function Pub({ data, type }) {
         <div
           id="contentTxt"
           className="py-4 px-2"
-          style={{background: 'linear-gradient(45deg, rgba(255, 0, 255, 0.6), rgba(255, 255, 0, 0.6))'}}
         >
-          <h2 className="font-bold text-xl p-2 border-l-[6px] border-solid border-cyan-300">
+          <h2 className="font-extrabold text-black text-xl p-2 border-l-[6px] border-solid border-black rounded-lg bg-slate-100">
             {data.title}
           </h2>
           {(data?.description && type !== 'portada') && (
-            <p className="mt-4 rounded-lg px-3 font-bold text-slate-200">{data.description}</p>
+            <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{data.description}</p>
           )}
         </div>
         {data?.image && (
@@ -183,7 +182,7 @@ export default function Pub({ data, type }) {
           ></audio>
         )}
       </div>
-      <div className="flex items-center justify-around py-3 bg-[rgba(109,255,187,0.1)] rounded-b-lg">
+      <div className="flex items-center justify-around py-3 rounded-b-lg border-t-[1px] border-solid border-slate-300">
         <div className="flex gap-3">
           <FaRegThumbsUp
             onClick={async () => {
@@ -195,32 +194,32 @@ export default function Pub({ data, type }) {
                 setLikesDissable(true);
               }
             }}
-            color="white"
+            color="black"
             size={20}
             className={`cursor-pointer hover:animate-pulse ${
               likesDissable ? "pointer-events-none" : ""
             }`}
           />
-          <p className="font-bold">{likes}</p>
+          <p className="font-bold text-black">{likes}</p>
         </div>
         <div className="flex gap-3">
           <FaRegStar
-            color="white"
+            color="black"
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold">0</p>
+          <p className="font-bold text-black">0</p>
         </div>
         <div className="flex gap-3">
           <FaRegComment
             onClick={() => {
               setComment(!comment);
             }}
-            color="white"
+            color="black"
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold">{data?.comments.length}</p>
+          <p className="font-bold text-black">{data?.comments.length}</p>
         </div>
       </div>
       {comment && (
@@ -231,7 +230,7 @@ export default function Pub({ data, type }) {
         >
           <div className="px-6 max-h-[720px] overflow-x-hidden overflow-y-auto">
             {data?.comments.length == 0 ? (
-              <h4 className="font-bold text-xl text-center py-2">
+              <h4 className="font-bold text-xl text-center py-2 text-black">
                 No hay comentarios
               </h4>
             ) : (
@@ -246,8 +245,8 @@ export default function Pub({ data, type }) {
                         onClick={() => router.push(`/home?author=${elem.author}`)}
                       />
                       <div>
-                        <p className="text-md font-bold">{elem.author}</p>
-                        <p className="text-sm">{moment(elem.date).fromNow()}</p>
+                        <p className="text-md font-bold text-black">{elem.author}</p>
+                        <p className="text-sm text-black">{moment(elem.date).fromNow()}</p>
                       </div>
                     </div>
                     {filterMsg(elem.msg)}
