@@ -13,13 +13,13 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_KEY,
     api_secret: process.env.CLOUDINARY_SECRET,
 });
-
+//HELPERS
 function filterFiles(x) {
     if (x.size > 4000000) return false;
     if(!/^image/.test(x.type)) return false;
     return true;
 }
-
+//ACTIONS
 export async function like(status, liker, id) {
     if(status !== 'authenticated') return;
 
@@ -101,4 +101,9 @@ export async function changeAvatar(data) {
     await Pubs.updateMany({author: author}, {avatar: url});
     
     return url;
+}
+
+export async function getAvatars(limit = 30) {
+    await db();
+    return await Users.find({}, {image: 1, _id: 0}).limit(limit).lean();
 }

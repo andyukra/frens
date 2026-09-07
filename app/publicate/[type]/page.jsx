@@ -115,12 +115,12 @@ export default function Publicate() {
 
 
   return (
-    <main className="md:px-10 px-5 py-5 h-[calc(100dvh-64px-1.25rem)]">
+    <main className="md:px-10 px-5 py-5 h-[calc(100dvh-64px-1.25rem)] text-black">
       <section className="h-full flex justify-center items-center flex-col gap-5">
         <h1 className="text-3xl font-bold">Publicar</h1>
         <form
           onSubmit={sendForm}
-          className="p-5 bg-[rgba(0,0,0,.1)] backdrop-blur-lg flex flex-col justify-center items-center gap-5 md:w-6/12 w-full rounded-lg shadow-lg"
+          className="p-5 bg-white flex flex-col justify-center items-center gap-5 md:w-6/12 w-full rounded-lg shadow-lg"
         >
           <hr />
           {type === "image" && (
@@ -144,9 +144,8 @@ export default function Publicate() {
                   />
                 ) : (
                   <FaImage
-                    color={"white"}
+                    color={"black"}
                     size={100}
-                    className="animate-pulse"
                   />
                 )}
                 <p className="mt-2 font-bold">Elegir imágen (4.5 MB màximo)</p>
@@ -157,7 +156,7 @@ export default function Publicate() {
             required
             maxLength="50"
             minLength="1"
-            className={`bg-[rgba(255,255,255,0.6)] rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none ${title.length > 50 && 'ring-2 ring-red-600 bg-red-200'}`}
+            className={`bg-slate-200 rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none ${title.length > 50 && 'ring-2 ring-red-600 bg-red-200'}`}
             type="text"
             placeholder="Título"
             value={title}
@@ -166,7 +165,7 @@ export default function Publicate() {
           {type === "video" && (
             <>
               <input
-                className="bg-[rgba(255,255,255,0.6)] rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none"
+                className="bg-slate-200 rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none"
                 type="url"
                 required
                 minLength="1"
@@ -175,7 +174,7 @@ export default function Publicate() {
                 value={yt}
                 onChange={(e) => setYt(e.target.value)}
               />
-              <FaYoutube color={"white"} size={100} className="animate-pulse" />
+              <FaYoutube color={"black"} size={100} />
             </>
           )}
           {type !== "video" && (
@@ -183,8 +182,8 @@ export default function Publicate() {
               required={type == 'text' ? true : false}
               maxLength="500"
               minLength="1"
-              className={`bg-[rgba(255,255,255,0.6)] rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none ${description.length > 500 && 'ring-2 ring-red-600 bg-red-200'}`}
-              rows="2"
+              className={`bg-slate-200 resize-none rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none ${description.length > 500 && 'ring-2 ring-red-600 bg-red-200'}`}
+              rows="3"
               placeholder="Descripción"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -204,17 +203,16 @@ export default function Publicate() {
                 htmlFor="upAudio"
               >
                 <FaHeadphones
-                  color={audio ? 'orange' : 'white'}
+                  color={audio ? 'orange' : 'black'}
                   size={100}
-                  className="animate-pulse"
                 />
                 <p className="mt-2 font-bold">Elegir Audio (.mp3 .wav .ogg) (4.5 MB màximo)</p>
               </label>
             </>
           )}
-          <button className={`${overflow ? 'pointer-events-none bg-slate-400' : ''} shadow rounded-lg px-4 py-2 font-bold w-full flex justify-center bg-amber-500`}>
+          <button className={`${overflow ? 'pointer-events-none bg-slate-700' : ''} shadow rounded-lg text-white px-4 py-2 font-bold w-full flex justify-center bg-black`}>
             {loader ? (
-              <FaSpinner className="animate-spin" color={"white"} size={35} />
+              <FaSpinner className="animate-spin" color={"black"} size={35} />
             ) : (
               <span className="text-xl font-bold">Publicar</span>
             )}
