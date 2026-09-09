@@ -1,5 +1,4 @@
 import Extras from "@/components/Extras";
-import Portada from "@/components/Portada";
 import PubsList from "@/components/PubsList";
 import PubsListSkeleton from "@/components/PubsListSkeleton";
 import ExtrasSkeleton from "@/components/ExtrasSkeleton";
@@ -45,9 +44,6 @@ export default async function Home({ searchParams }) {
       ) : ''}
       <section className="flex md:gap-5 mb-5">
         <div className="flex flex-col gap-5 w-full" id="pubs">
-          <div className="w-full">
-            <Portada />
-          </div>
           <Suspense fallback={<PubsListSkeleton />}>
             <PubsList page={page} author={authorPage} search={search} docsPerPage={docsPerPage}/>
           </Suspense>
