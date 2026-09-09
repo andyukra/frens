@@ -30,19 +30,19 @@ const optVars = {
   transition: { duration: 1 },
 };
 
-export default function Pub({ data, type }) {
+export default function Pub({ info, type }) {
   //HOOKS
-  data = JSON.parse(data);
+  info = JSON.parse(info);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [comment, setComment] = useState(false);
   const [opts, setOpts] = useState(false);
   const [delLoader, setDelLoader] = useState(false);
-  const [likes, setLikes] = useState(data.likes.length);
+  const [likes, setLikes] = useState(info.likes.length);
   const [likesDissable, setLikesDissable] = useState(false);
+  const [commentaries, setCommentaries] = useState(info.comments);
 
-  //HELPERS
-  //FILTER MSGS TYPE
+  //FUNCTIONS
   function filterMsg(msg) {
     if(/.*\.(jpg|gif|png|jpeg|tiff|heif|bmp|webp)$/i.test(msg)) {
       return (
@@ -56,21 +56,20 @@ export default function Pub({ data, type }) {
       )
     }
   }
-  //INIT
-  async function deletePub(data) {
-    if (data.author !== session.user.name) return;
+  async function deletePub(info) {
+    if (info.author !== session.user.name) return;
     if (!confirm("Seguro que desea eliminar esto?")) return;
     setDelLoader(true);
-    const type = data.image
+    const type = info.image
       ? "image"
-      : data.yt
+      : info.yt
       ? "yt"
-      : data.audio
+      : info.audio
       ? "audio"
       : "text";
-    let url = `/api/publicate?type=${type}&id=${data._id}`;
-    if (type == "image") url += `&src=${data.image.match(/.{24}$/)[0]}`;
-    if (type == "audio") url += `&src=${data.audio.match(/.{24}$/)[0]}`;
+    let url = `/api/publicate?type=${type}&id=${info._id}`;
+    if (type == "image") url += `&src=${info.image.match(/.{24}$/)[0]}`;
+    if (type == "audio") url += `&src=${info.audio.match(/.{24}$/)[0]}`;
     const res = await fetch(url, {
       method: "DELETE",
     });
@@ -80,6 +79,15 @@ export default function Pub({ data, type }) {
     if (!res.ok) throw res;
     const response = await res.json();
     if (response.msg == "OK") router.refresh();
+  }
+  function addComment(text) {
+    const obj = {
+      avatar: session.user.image,
+      author: session.user.name,
+      date: new Date(),
+      msg: text,
+    }
+    setCommentaries(prev => [obj, ...prev]);
   }
 
   return (
@@ -91,17 +99,17 @@ export default function Pub({ data, type }) {
         <div className="flex gap-3 items-center">
           <div className="md:w-[50px] md:h-[50px] w-[40px] h-[40px]">
             <img
-              src={data.avatar}
+              src={info.avatar}
               className="rounded-full cursor-pointer md:w-[50px] md:h-[50px] w-[40px] h-[40px]"
               alt="avatar user"
-              onClick={() => router.push(`/home?author=${data.author}`)}
+              onClick={() => router.push(`/home?author=${info.author}`)}
             />
           </div>
           <div className="flex flex-col">
             <p className="md:text-xl text-md font-semibold text-slate-800">
-              {data.author}
+              {info.author}
             </p>
-            <p className="text-sm md:text-md text-slate-500">{moment(data.date).fromNow()}</p>
+            <p className="text-sm md:text-md text-slate-500">{moment(info.date).fromNow()}</p>
           </div>
         </div>
         <div className="relative">
@@ -113,7 +121,7 @@ export default function Pub({ data, type }) {
           >
             <li className="w-full">
               <Link
-                href={`/pub?id=${data._id}`}
+                href={`/pub?id=${info._id}`}
                 className="cursor-pointer hover:bg-slate-100 rounded w-full flex justify-between p-3"
               >
                 <p className="font-bold text-md">Visitar</p>
@@ -122,11 +130,11 @@ export default function Pub({ data, type }) {
             </li>
             <li className="cursor-pointer hover:bg-slate-100 rounded w-full flex justify-between p-3">
               <p className="font-bold text-md">Copiar link</p>
-              <Clipboard pubId={data._id} color="black" />
+              <Clipboard pubId={info._id} color="black" />
             </li>
-            {data.author === session?.user.name && (
+            {info.author === session?.user.name && (
               <li
-                onClick={() => deletePub(data)}
+                onClick={() => deletePub(info)}
                 className="cursor-pointer hover:bg-red-200 rounded w-full flex justify-between p-3"
               >
                 <p className="font-bold text-md text-red-500">Eliminar</p>
@@ -158,25 +166,25 @@ export default function Pub({ data, type }) {
           className="py-4 px-2"
         >
           <h2 className="font-extrabold text-black text-xl p-2 border-l-[6px] border-solid border-black rounded-lg bg-slate-100">
-            {data.title}
+            {info.title}
           </h2>
-          {(data?.description && type !== 'portada') && (
-            <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{data.description}</p>
+          {(info?.description && type !== 'portada') && (
+            <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{info.description}</p>
           )}
         </div>
-        {data?.image && (
+        {info?.image && (
           <div className="w-full">
             <img
               alt="imagen linda"
-              src={data.image}
+              src={info.image}
               className="w-full h-auto"
             />
           </div>
         )}
-        {data?.yt && <YtPlayer link={data.yt} />}
-        {data?.audio && (
+        {info?.yt && <YtPlayer link={info.yt} />}
+        {info?.audio && (
           <audio
-            src={data.audio}
+            src={info.audio}
             controls
             className="w-11/12 mx-auto my-4"
           ></audio>
@@ -187,7 +195,7 @@ export default function Pub({ data, type }) {
           <FaRegThumbsUp
             onClick={async () => {
               if (likesDissable) return;
-              const res = await like(status, session?.user?.name, data._id);
+              const res = await like(status, session?.user?.name, info._id);
               if(res == 'OK') {
                 setLikes(likes + 1);
               } else {
@@ -219,7 +227,7 @@ export default function Pub({ data, type }) {
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold text-black">{data?.comments.length}</p>
+          <p className="font-bold text-black">{info?.comments.length}</p>
         </div>
       </div>
       {comment && (
@@ -229,12 +237,12 @@ export default function Pub({ data, type }) {
           animate={comment ? "visible" : "hidden"}
         >
           <div className="px-6 max-h-[720px] overflow-x-hidden overflow-y-auto">
-            {data?.comments.length == 0 ? (
+            {info?.comments.length == 0 ? (
               <h4 className="font-bold text-xl text-center py-2 text-black">
                 No hay comentarios
               </h4>
             ) : (
-              data.comments.reverse().map((elem, key) => {
+              commentaries.reverse().map((elem, key) => {
                 return ((
                   <div key={key} className="py-2 my-2 flex flex-col gap-3">
                     <div className="flex gap-4 items-center">
@@ -256,7 +264,7 @@ export default function Pub({ data, type }) {
             )}
           </div>
           <div className="px-6 pb-4">
-            <ComentsForm pubId={data._id} />
+            <ComentsForm pubId={info._id} cb={addComment} />
           </div>
         </motion.div>
       )}

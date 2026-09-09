@@ -2,13 +2,11 @@
 import { FaPaperPlane, FaSpinner, FaImage } from "react-icons/fa6";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Toast from '@/components/Toast';
 
-export default function ComentsForm({pubId}) {
+export default function ComentsForm({pubId, cb}) {
   //HOOKS
   const { status } = useSession();
-  const router = useRouter();
   const [commentTxt, setCommentTxt] = useState("");
   const [loaderComment, setLoaderComment] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
@@ -21,6 +19,7 @@ export default function ComentsForm({pubId}) {
   async function upComment(e, type) {
     e.preventDefault();
     if ((status == 'unauthenticated')) return;
+    if(loaderComment) return;
     setLoaderComment(true);
     const form = new FormData();
     form.append("id", pubId);
@@ -58,7 +57,7 @@ export default function ComentsForm({pubId}) {
     setLoaderComment(false);
     if (response.msg == "OK") {
       toaster('El comentario se publicó exitosamente');
-      router.refresh();
+      cb(response.comment);
       return;
     } else {
       toaster('El comentario no se pudo publicar');
@@ -89,7 +88,7 @@ export default function ComentsForm({pubId}) {
         </label>
       </div>
       {loaderComment ? (
-        <FaSpinner className="animate-spin" color="white" size={20} />
+        <FaSpinner className="animate-spin" color="black" size={20} />
       ) : (
         <button className={`${status == 'unauthenticated' && 'pointer-events-none'}`}>
           <FaPaperPlane

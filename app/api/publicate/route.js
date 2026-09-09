@@ -7,25 +7,28 @@ import { Types } from "mongoose";
 import Users from "@/lib/models/users";
 import blockeds from '@/lib/blocked';
 
+const ONESIGNAL_API_KEY = process.env.ONESIGNAL_API_KEY;
+const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID;
+
 //Web Push Notifications
-async function webPushNotif(title, imgSrc, desc = '') {
+async function webPushNotif(title, imgSrc = undefined, desc = '') {
   const url = "https://api.onesignal.com/notifications";
   const options = {
     method: "POST",
     headers: {
       accept: "application/json",
-      Authorization: "basic ZTFjYmM5NzItYzMxMy00NTRkLWI2Y2UtMzJmZDY1NTNhZTg0",
+      Authorization: `Basic ${ONESIGNAL_API_KEY}`,
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      headings: { en: title },
+      headings: { es: title, en: title },
       chrome_web_image: imgSrc,
-      chrome_web_icon: 'https://res.cloudinary.com/andy-company/image/upload/v1714675218/favicon_btppz8.png',
-      chrome_web_badge: 'https://res.cloudinary.com/andy-company/image/upload/v1714675434/Recurso_1_tredno.png',
-      contents: { en: desc },
-      web_url: "https://frenss.online/home",
-      app_id: "736e3c17-35ed-4cf9-a2b7-bd58f727c849",
-      name: "Frenss",
+      chrome_web_icon: 'https://res.cloudinary.com/dtloj3d2a/image/upload/v1788990890/jppnmbmtjw3xywdepml6.png',
+      chrome_web_badge: 'https://res.cloudinary.com/dtloj3d2a/image/upload/v1788990890/jppnmbmtjw3xywdepml6.png',
+      contents: { es: desc, en: desc },
+      web_url: "https://frens.site/home",
+      app_id: `${ONESIGNAL_APP_ID}`,
+      name: "Frens",
       included_segments: ["Total Subscriptions"],
     }),
   };
@@ -86,6 +89,9 @@ export const POST = async (req) => {
         title: data.get("title").trim(),
         description: data.get("description").trim(),
       });
+      //SEND WEB PUSH NOTIFICATION
+      await webPushNotif(data.get('title').trim(), url, data.get('description').trim());
+
       return NextResponse.json({ msg: "OK" });
     }
     //IMAGE
@@ -131,9 +137,8 @@ export const POST = async (req) => {
           description: data.get("description").trim(),
           image: url,
         });
-
-        const res = await webPushNotif(data.get('title').trim(), url, data.get('description').trim());
-        console.log(res);
+        //SEND WEB PUSH NOTIFICATION
+        await webPushNotif(data.get('title').trim(), url, data.get('description').trim());
 
         return NextResponse.json({ msg: "OK" });
       }
@@ -152,6 +157,9 @@ export const POST = async (req) => {
         yt: yt_id,
       });
 
+      //SEND WEB PUSH NOTIFICATION
+      await webPushNotif(data.get('title').trim(), null, data.get('description').trim());
+
       return NextResponse.json({ msg: "OK" });
     }
     //AUDIO
@@ -160,7 +168,7 @@ export const POST = async (req) => {
         if(data.get('description').length > 500) return NextResponse.json({ err: "LARGE DESCRIPTION" });
       }
       //FILTER AUDIO FILE
-      function filter(file) {
+      async function filter(file) {
         if (file.size > 25000000) {
           return NextResponse.json({ err: "BIG" });
         }
@@ -169,6 +177,8 @@ export const POST = async (req) => {
           file.type != "image/wav" ||
           file.type != "image/ogg"
         ) {
+          //SEND WEB PUSH NOTIFICATION
+          await webPushNotif(data.get('title').trim(), url, data.get('description').trim());
           return NextResponse.json({ err: "BADTYPE" });
         }
         return true;

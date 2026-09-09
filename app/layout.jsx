@@ -6,8 +6,10 @@ import { Quicksand } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "600"] });
+const queryClient = new QueryClient();
 
 export default function RootLayout({ children }) {
   useEffect(() => {
@@ -30,13 +32,15 @@ export default function RootLayout({ children }) {
         <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
       </head>
       <body style={quicksand.style}>
-        <Provider>
-          <header className="sticky top-0 z-[61] mb-5">
-            <Navbar />
-          </header>
-          {children}
-          <Footer />
-        </Provider>
+          <Provider>
+            <QueryClientProvider client={queryClient}>
+              <header className="sticky top-0 z-[61] mb-5">
+                <Navbar />
+              </header>
+              {children}
+              <Footer />
+            </QueryClientProvider>
+          </Provider>
       </body>
     </html>
   );

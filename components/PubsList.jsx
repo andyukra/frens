@@ -46,7 +46,7 @@ export default async function PubsList({ page, author, search, docsPerPage }) {
         )}
 		<div className="lg:columns-4 md:columns-2 break-inside-avoid">
 		{pubs.map((elem, key) => {
-			return <Pub data={JSON.stringify(elem)} key={key} />;
+			return <Pub info={JSON.stringify(elem)} key={key} />;
 		})}
 		</div>
     <Pagination total={count} docs={docsPerPage} />

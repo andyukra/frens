@@ -43,7 +43,7 @@ export async function POST(req) {
             avatar: imgDB,
             msg: comment.trim()
         }} });
-        return NextResponse.json({msg: 'OK'});
+        return NextResponse.json({msg: 'OK', comment: comment.trim()});
     }
 
     //FOR FILES
@@ -68,7 +68,7 @@ export async function POST(req) {
             avatar: imgDB,
             msg: url
         }} });
-        return NextResponse.json({msg: 'OK'});
+        return NextResponse.json({msg: 'OK', comment: url});
 
     }
 

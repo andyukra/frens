@@ -7,7 +7,7 @@ export default function PubsListSkeleton() {
 			return (
 				<div
 					key={key}
-					className="bg-gray-200 border border-gray-300 rounded-md shadow-sm p-4 mb-4"
+					className="h-80 bg-gray-200 border border-gray-300 rounded-md shadow-sm p-4 mb-4"
 				>
 					<div className="animate-pulse">
 						<div className="bg-gray-300 h-6 w-full mb-2"></div>
