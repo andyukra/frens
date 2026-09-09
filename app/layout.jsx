@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Analytics } from "@vercel/analytics/next";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "600"] });
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
               <Footer />
             </QueryClientProvider>
           </Provider>
+          <Analytics />
       </body>
     </html>
   );

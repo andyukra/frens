@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.102.8",
+    "@vercel/analytics": "^2.0.1",
     "caniuse-lite": "^1.0.30001704",
     "cloudinary": "^2.0.3",
     "framer-motion": "^11.0.24",
