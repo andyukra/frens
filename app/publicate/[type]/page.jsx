@@ -212,7 +212,7 @@ export default function Publicate() {
           )}
           <button className={`${overflow ? 'pointer-events-none bg-slate-700' : ''} shadow rounded-lg text-white px-4 py-2 font-bold w-full flex justify-center bg-black`}>
             {loader ? (
-              <FaSpinner className="animate-spin" color={"black"} size={35} />
+              <FaSpinner className="animate-spin" color={"white"} size={35} />
             ) : (
               <span className="text-xl font-bold">Publicar</span>
             )}

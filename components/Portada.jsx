@@ -10,7 +10,7 @@ const lobster = Lobster({ subsets: ["latin"], weight: ["400"] });
 await db();
 
 const { dailyPub } = await Daily.findOne({});
-const daily = await Pubs.findById(dailyPub);
+const daily = await Pubs.findById(dailyPub).lean();
 
 export default function Portada() {
   return (

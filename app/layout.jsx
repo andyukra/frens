@@ -11,11 +11,10 @@ const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "600"] });
 
 export default function RootLayout({ children }) {
   useEffect(() => {
-    window.OneSignal = window.OneSignal || [];
-    OneSignal.push(function () {
-      OneSignal.init({
-        appId: "736e3c17-35ed-4cf9-a2b7-bd58f727c849",
-        safari_web_id: "web.onesignal.auto.62a04992-e924-4258-8064-560c4d6dc347",
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "d0433dfd-d5ce-4147-9402-9c17119fcc55",
       });
     });
 
@@ -28,10 +27,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <title>Frens</title>
-        <script
-          src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"
-          async=""
-        ></script>
+        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
       </head>
       <body style={quicksand.style}>
         <Provider>
