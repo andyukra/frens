@@ -132,7 +132,7 @@ export default function Pub({ info, type }) {
               <p className="font-bold text-md">Copiar link</p>
               <Clipboard pubId={info._id} color="black" />
             </li>
-            {info.author === session?.user.name && (
+            {info.author === session?.user?.name && (
               <li
                 onClick={() => deletePub(info)}
                 className="cursor-pointer hover:bg-red-200 rounded w-full flex justify-between p-3"
@@ -242,7 +242,7 @@ export default function Pub({ info, type }) {
                 No hay comentarios
               </h4>
             ) : (
-              commentaries.reverse().map((elem, key) => {
+              [...commentaries].reverse().map((elem, key) => {
                 return ((
                   <div key={key} className="py-2 my-2 flex flex-col gap-3">
                     <div className="flex gap-4 items-center">

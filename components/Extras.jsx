@@ -19,14 +19,15 @@ export default async function Extras() {
               return (
                 <article
                   key={key}
-                  className="h-full rounded-xl hover:scale-[1.04] transition-all shadow-xl"
-                  style={{ flex: "0 0 300px" }}
+                  className="h-full hover:scale-[1.04] transition-all"
+                  style={{ flex: "0 0 300px", cornerShape: "squircle", borderRadius: "1.5rem", border: "0.5rem solid black" }}
                 >
                   <Link href={`/pub?id=${elem._id}`}>
                     <img
-                      className="h-full w-full rounded-xl object-cover"
+                      className="h-full w-full object-cover"
                       src={elem.image}
                       alt={elem.title}
+                      style={{cornerShape: "squircle", borderRadius: "1.5rem"}}
                     />
                   </Link>
                 </article>
@@ -38,14 +39,15 @@ export default async function Extras() {
               return (
                 <article
                   key={key}
-                  className="h-full rounded-xl hover:scale-[1.04] transition-all shadow-xl"
-                  style={{ flex: "0 0 300px" }}
+                  className="h-full rounded-xl hover:scale-[1.04] transition-all"
+                  style={{ flex: "0 0 300px", cornerShape: "squircle", borderRadius: "1.5rem", border: "0.5rem solid black" }}
                 >
                   <Link href={`/pub?id=${elem._id}`}>
                     <img
-                      className="h-full w-full rounded-xl object-cover"
+                      className="h-full w-full object-cover"
                       src={elem.image}
                       alt={elem.title}
+                      style={{cornerShape: "squircle", borderRadius: "1.5rem"}}
                     />
                   </Link>
                 </article>
