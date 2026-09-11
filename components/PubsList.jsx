@@ -1,38 +1,8 @@
-import { db } from "@/lib/db";
-import Pubs from "@/lib/models/pubs";
 import Pub from "@/components/Pub";
 import Pagination from "@/components/Pagination";
-
-async function getData(page, search, author, docsPerPage) {
-  const skip = (page - 1) * docsPerPage;
-  if (search) {
-    const pubs = await Pubs.find({ title: { $regex: search, $options: "i" } })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(docsPerPage);
-    const count = await Pubs.find({
-      title: { $regex: search, $options: "i" },
-    }).countDocuments();
-    return { pubs, count };
-  }
-  if (author !== "all" && !search) {
-    const pubs = await Pubs.find({ author: author })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(docsPerPage);
-    const count = await Pubs.find({ author: author }).countDocuments();
-    return { pubs, count };
-  }
-  const pubs = await Pubs.find({})
-    .sort({ date: -1 })
-    .skip(skip)
-    .limit(docsPerPage);
-  const count = await Pubs.find({}).countDocuments();
-  return { pubs, count };
-}
+import { getData } from "@/app/actions/serverActions";
 
 export default async function PubsList({ page, author, search, docsPerPage }) {
-  await db();
   const { pubs, count } = await getData(page, search, author, docsPerPage);
   return (
 	<div>

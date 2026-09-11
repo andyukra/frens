@@ -57,7 +57,7 @@ export default function Pub({ info, type }) {
     }
   }
   async function deletePub(info) {
-    if (info.author !== session.user.name) return;
+    if (info.author !== session?.user?.name) return;
     if (!confirm("Seguro que desea eliminar esto?")) return;
     setDelLoader(true);
     const type = info.image
@@ -82,8 +82,8 @@ export default function Pub({ info, type }) {
   }
   function addComment(text) {
     const obj = {
-      avatar: session.user.image,
-      author: session.user.name,
+      avatar: session?.user?.image,
+      author: session?.user?.name,
       date: new Date(),
       msg: text,
     }
@@ -197,7 +197,7 @@ export default function Pub({ info, type }) {
               if (likesDissable) return;
               const res = await like(status, session?.user?.name, info._id);
               if(res == 'OK') {
-                setLikes(likes + 1);
+                setLikes(prev => prev + 1);
               } else {
                 setLikesDissable(true);
               }
