@@ -19,28 +19,31 @@ function filterFiles(x) {
   if (!/^image/.test(x.type)) return false;
   return true;
 }
-//ACTIONS
-export async function like(status, liker, id) {
-  if (status !== "authenticated") return;
+
+export async function like(id) {
+  // 1. Verificar autenticación directamente en el servidor por seguridad
+  const session = await getServerSession();
+  if (!session || !session.user) {
+    return { status: "UNAUTHORIZED" };
+  }
+
+  const userId = session.user.id; // O el identificador único del usuario
 
   await db();
-  //VERIFY LIKER
-  const { likes } = await Pubs.findById(id, { likes: 1, _id: 0 });
 
-  //SET LIKE
-  if (likes.length == 0) {
-    await Pubs.findByIdAndUpdate(id, { $push: { likes: { author: liker } } });
-    return "BAD";
+  // 2. Operación atómica con $addToSet (agrega solo si no existe en el array)
+  const updatedPub = await Pubs.findOneAndUpdate(
+    { _id: id, "likes.author": { $ne: userId } }, // Condición: que el id coincida Y el usuario NO esté en la lista
+    { $push: { likes: { author: userId } } },
+    { new: true }
+  );
+
+  // Si no actualizó nada, significa que el usuario ya había dado like
+  if (!updatedPub) {
+    return { status: "EXISTS" };
   }
 
-  const check = likes.filter((x) => x.author == liker);
-
-  if (check.length !== 0) {
-    return "EXISTS";
-  } else {
-    await Pubs.findByIdAndUpdate(id, { $push: { likes: { author: liker } } });
-    return "OK";
-  }
+  return { status: "OK" };
 }
 
 export async function changePortrait(data) {
@@ -133,4 +136,15 @@ export async function getData(page, search, author, docsPerPage) {
     .limit(docsPerPage);
   const count = await Pubs.find({}).countDocuments();
   return { pubs, count };
+}
+
+export async function getPub(id) {
+  await db();
+  let pub = null;
+  try {
+    pub = await Pubs.findById(id);
+    return pub;
+  } catch (error) {
+    return "EMPTY";
+  }
 }

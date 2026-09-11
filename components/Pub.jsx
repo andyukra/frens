@@ -195,8 +195,9 @@ export default function Pub({ info, type }) {
           <FaRegThumbsUp
             onClick={async () => {
               if (likesDissable) return;
-              const res = await like(status, session?.user?.name, info._id);
-              if(res == 'OK') {
+              const res = await like(info._id);
+              if(res.status == 'OK') {
+                console.log(res);
                 setLikes(prev => prev + 1);
               } else {
                 setLikesDissable(true);
