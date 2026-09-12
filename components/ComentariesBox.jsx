@@ -35,7 +35,7 @@ export default function ComentariesBox({ comments, pubId }) {
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            {commentaries.map((comment, key) => (
+            {[...commentaries].reverse().map((comment, key) => (
               <Comentary
                 key={key}
                 elem={comment}
