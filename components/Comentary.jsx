@@ -22,7 +22,6 @@ function filterMsg(msg) {
 export default function Comentary({ elem }) {
   return (
     <article
-      key={elem._id.toString()}
       className="my-4 py-2 px-4 rounded-lg"
     >
       {/* HEADER */}

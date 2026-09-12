@@ -2,7 +2,6 @@
 
 import { FaPlayCircle, FaStopCircle } from "react-icons/fa";
 import { useState, useRef } from 'react';
-import { motion, useAnimation } from 'framer-motion';
 
 export default function Radio() {
   const audioRef = useRef(null);
@@ -21,10 +20,7 @@ export default function Radio() {
   }
 
   return (
-    <motion.div
-      initial={{backgroundColor: '#223'}}
-      animate={{backgroundColor: ['#8A2BE2', '#FF4500', '#FF1493', '#DC143C']}}
-      transition={{ repeat: Infinity, duration: 10, repeatType: 'mirror'}}
+    <div
       className="h-[100px] w-full py-2 px-5 flex items-center justify-between rounded-lg shadow-md"
     >
       <div className="btns">
@@ -42,6 +38,6 @@ export default function Radio() {
         <img src="/desmadres.avif" alt="logo chat desmadres" width={200}/>
       </div>
       <audio src="https://stream.zeno.fm/gkvdqocej4rtv" ref={audioRef}></audio>
-    </motion.div>
+    </div>
   )
 }

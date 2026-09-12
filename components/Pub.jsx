@@ -15,13 +15,17 @@ import {
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 //COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
 import { like } from "@/app/actions/serverActions";
 import Clipboard from "@/components/Clipboard";
 import CardHeader from "@/components/CardHeader";
+import BasicSkeleton from "@/components/BasicSkeleton";
 
-import ComentariesBox from "./ComentariesBox";
+const ComentariesBox = dynamic(() => import("@/components/ComentariesBox"), {
+  loading: () => <BasicSkeleton />,
+});
 
 moment.locale("es");
 
@@ -183,10 +187,7 @@ export default function Pub({ info, type }) {
         </div>
       </div>
       {comment && (
-        <ComentariesBox
-          comments={info?.comments}
-          pubId={info._id.toString()}
-        />
+        <ComentariesBox comments={info.comments} pubId={info._id.toString()} />
       )}
     </article>
   );
