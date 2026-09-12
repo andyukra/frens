@@ -11,7 +11,7 @@ const ONESIGNAL_API_KEY = process.env.ONESIGNAL_API_KEY;
 const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID;
 
 //Web Push Notifications
-async function webPushNotif(title, imgSrc = undefined, desc = '') {
+async function webPushNotif(title, imgSrc, desc) {
   const url = "https://api.onesignal.com/notifications";
   const options = {
     method: "POST",
@@ -65,7 +65,7 @@ export const POST = async (req) => {
   if(blockeds.includes(user.email)) return NextResponse.json({msg: 'BLOCKED USER'});
   await db();
   //GET USER DATA FROM DB
-  const { image: imgDB, pubcountperday } = await Users.findOne({email: user.email}, {image: 1, _id: 0, pubcountperday: 1});
+  const { image: imgDB, pubcountperday } = await Users.findOne({email: user.email}, {image: 1, _id: 0, pubcountperday: 1}).lean();
   //CHECK PUBS PER DAY LIMIT
   if(pubcountperday <= 0) return NextResponse.json({msg: 'PUB LIMITS REACHED'});
   //SUBSTRACT ONE PUBCOUNTPERDAY
@@ -74,48 +74,38 @@ export const POST = async (req) => {
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
   const data = await req.formData();
-  const title = data.get('title');
-  if(title.length > 50) return NextResponse.json({err: 'BAD LARGE TITLE'});
+  const title = data.get('title') || "";
+  const description = data.get("description") || "";
+  const image = data.get("file") || null;
+  const audio = data.get("audio") || null;
+  if(!title || title.length > 50) return NextResponse.json({err: 'BAD TITLE'});
 
   //SWITCH TYPE
   switch (type) {
     //TEXT
     case "text": {
-      if (!data.get("title") || !data.get("description") || data.get("description").length > 500)
+      if (!description || description.length > 500)
         NextResponse.json({ err: "EMPTY OR LARGE" });
       await Pubs.create({
         author: user.name,
         avatar: imgDB,
-        title: data.get("title").trim(),
-        description: data.get("description").trim(),
+        title: title.trim(),
+        description: description.trim(),
       });
       //SEND WEB PUSH NOTIFICATION
-      await webPushNotif(data.get('title').trim(), url, data.get('description').trim());
-
+      await webPushNotif(title.trim(), "", description.trim());
       return NextResponse.json({ msg: "OK" });
     }
     //IMAGE
     case "image": {
       //IMG FILTER
-      if(data.get('description')) {
-        if(data.get('description').length > 500) return NextResponse.json({ err: "LARGE DESCRIPTION" });
-      }
+      if(description && description.length > 500) return NextResponse.json({ err: "LARGE DESCRIPTION" });
       function filter(file) {
-        if (file.size > 15000000) {
-          return NextResponse.json({ err: "BIG" });
-        }
-        if (
-          file.type != "image/png" ||
-          file.type != "image/jpeg" ||
-          file.type != "image/jpg" ||
-          file.type != "image/gif"
-        ) {
-          return NextResponse.json({ err: "BADTYPE" });
-        }
+        if (!file || file.size > 15000000) return NextResponse.json({ err: "BIG OR EMPTY IMAGE" });
+        if (!/^image\/(png|jpeg|jpg|gif|avif|webp|bmp)$/i.test(file.type)) return NextResponse.json({ err: "BAD TYPE IMAGE" });
         return true;
       }
-      const file = data.get("file");
-      if (filter(file)) {
+      if (filter(image)) {
         //START PROCESS
         const binary = await file.arrayBuffer();
         const buffer = Buffer.from(binary);
@@ -133,12 +123,12 @@ export const POST = async (req) => {
         await Pubs.create({
           author: user.name,
           avatar: imgDB,
-          title: data.get("title").trim(),
-          description: data.get("description").trim(),
+          title: title.trim(),
+          description: description.trim(),
           image: url,
         });
         //SEND WEB PUSH NOTIFICATION
-        await webPushNotif(data.get('title').trim(), url, data.get('description').trim());
+        await webPushNotif(title.trim(), url, description.trim());
 
         return NextResponse.json({ msg: "OK" });
       }
@@ -157,33 +147,17 @@ export const POST = async (req) => {
         yt: yt_id,
       });
 
-      //SEND WEB PUSH NOTIFICATION
-      await webPushNotif(data.get('title').trim(), null, data.get('description').trim());
-
       return NextResponse.json({ msg: "OK" });
     }
     //AUDIO
     case "audio": {
-      if(data.get('description')) {
-        if(data.get('description').length > 500) return NextResponse.json({ err: "LARGE DESCRIPTION" });
-      }
+      if(description && description.length > 500) return NextResponse.json({ err: "LARGE DESCRIPTION" });
       //FILTER AUDIO FILE
       async function filter(file) {
-        if (file.size > 25000000) {
-          return NextResponse.json({ err: "BIG" });
-        }
-        if (
-          file.type != "image/mp3" ||
-          file.type != "image/wav" ||
-          file.type != "image/ogg"
-        ) {
-          //SEND WEB PUSH NOTIFICATION
-          await webPushNotif(data.get('title').trim(), url, data.get('description').trim());
-          return NextResponse.json({ err: "BADTYPE" });
-        }
+        if (!file || file.size > 15000000) return NextResponse.json({ err: "BIG OR EMPTY AUDIO" });
+        if (!/^audio\/(mp3|mpeg|ogg|wav|aac|webm|midi)$/i.test(file.type)) return NextResponse.json({ err: "BAD TYPE AUDIO" });
         return true;
       }
-      const audio = data.get("audio");
       if (filter(audio)) {
         //START PROCESS
         const binary = await audio.arrayBuffer();
@@ -202,18 +176,17 @@ export const POST = async (req) => {
         await Pubs.create({
           author: user.name,
           avatar: imgDB,
-          title: data.get("title").trim(),
-          description: data.get("description").trim(),
+          title: title.trim(),
+          description: description.trim(),
           audio: url,
         });
-
+        //WEBPUSH NOTIFICATION
+        await webPushNotif(title.trim(), "", description.trim());
         return NextResponse.json({ msg: "OK" });
       }
       break;
     }
   }
-
-  /**/
 
   //BAD
   return NextResponse.json({ status: 403 });

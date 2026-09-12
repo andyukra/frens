@@ -30,14 +30,12 @@ export async function POST(req) {
 
     if(!id) return NextResponse.json({err: 'BAD ID'});
     if(!file && !comment) return NextResponse.json({err: 'BAD EMPTY COMMENT'});
-    if(comment) {
-        if(comment.lenght > 500) return NextResponse.json({err: 'BAD LARGE COMMENT'});
-    }
+    if(comment && comment.lenght > 500) return NextResponse.json({err: 'BAD LARGE COMMENT'});
 
     //FOR COMMENTS
     if(comment) { 
         await db();
-        const { image: imgDB } = await Users.findOne({email: user.email}, {image: 1, _id: 0});
+        const { image: imgDB } = await Users.findOne({email: user.email}, {image: 1, _id: 0}).lean();
         await Pubs.updateOne({_id:id}, { $push: {comments: {
             author: user.name,
             avatar: imgDB,
@@ -62,7 +60,7 @@ export async function POST(req) {
         });
 
         await db();
-        const { image: imgDB } = await Users.findOne({email: user.email}, {image: 1, _id: 0});
+        const { image: imgDB } = await Users.findOne({email: user.email}, {image: 1, _id: 0}).lean();
         await Pubs.updateOne({_id:id}, { $push: {comments: {
             author: user.name,
             avatar: imgDB,

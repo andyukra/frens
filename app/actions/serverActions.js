@@ -140,10 +140,8 @@ export async function getData(page, search, author, docsPerPage) {
 
 export async function getPub(id) {
   await db();
-  let pub = null;
   try {
-    pub = await Pubs.findById(id);
-    return pub;
+    return await Pubs.findById(id).lean();
   } catch (error) {
     return "EMPTY";
   }

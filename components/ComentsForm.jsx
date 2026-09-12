@@ -84,17 +84,16 @@ export default function ComentsForm({pubId, cb}) {
         />
         <input type="file" id={pubId} hidden accept="image/*" onChange={e => upComment(e, 'IMG')}/>
         <label htmlFor={pubId} className="">
-          <FaImage className="text-black cursor-pointer size-5"/>
+          <FaImage className="text-gray-600 cursor-pointer size-5"/>
         </label>
       </div>
       {loaderComment ? (
-        <FaSpinner className="animate-spin" color="black" size={20} />
+        <FaSpinner className="animate-spin text-gray-600" size={20} />
       ) : (
         <button className={`${status == 'unauthenticated' && 'pointer-events-none'}`}>
           <FaPaperPlane
-            color="black"
             size={20}
-            className='cursor-pointer hover:animate-pulse'
+            className='cursor-pointer hover:animate-pulse text-gray-600'
           />
         </button>
       )}

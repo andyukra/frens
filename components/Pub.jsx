@@ -10,52 +10,32 @@ import {
   FaRegComment,
   FaSpinner,
   FaArrowRightFromBracket,
-  FaDeleteLeft
+  FaDeleteLeft,
 } from "react-icons/fa6";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+//COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
-import { motion } from "framer-motion";
-import ComentsForm from "@/components/ComentsForm";
 import { like } from "@/app/actions/serverActions";
 import Clipboard from "@/components/Clipboard";
+import CardHeader from "@/components/CardHeader";
+
+import ComentariesBox from "./ComentariesBox";
 
 moment.locale("es");
-
-//FRAME MOTION FOR COMMENTARIES BOX
-const optVars = {
-  hidden: { opacity: 0, scale: 0 },
-  visible: { opacity: 1, scale: 1 },
-  transition: { duration: 1 },
-};
 
 export default function Pub({ info, type }) {
   //HOOKS
   info = JSON.parse(info);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [comment, setComment] = useState(false);
   const [opts, setOpts] = useState(false);
   const [delLoader, setDelLoader] = useState(false);
   const [likes, setLikes] = useState(info.likes.length);
   const [likesDissable, setLikesDissable] = useState(false);
-  const [commentaries, setCommentaries] = useState(info.comments);
 
-  //FUNCTIONS
-  function filterMsg(msg) {
-    if(/.*\.(jpg|gif|png|jpeg|tiff|heif|bmp|webp)$/i.test(msg)) {
-      return (
-        <img src={msg} alt="comentario con imagen" className="max max-w-[250px] max-h-[300px] rounded-lg drop-shadow-md"/>
-      )
-    } else {
-      return (
-        <p className="font-bold p-3 rounded-lg bg-slate-200 text-black break-word">
-          {msg}
-        </p>
-      )
-    }
-  }
   async function deletePub(info) {
     if (info.author !== session?.user?.name) return;
     if (!confirm("Seguro que desea eliminar esto?")) return;
@@ -63,10 +43,10 @@ export default function Pub({ info, type }) {
     const type = info.image
       ? "image"
       : info.yt
-      ? "yt"
-      : info.audio
-      ? "audio"
-      : "text";
+        ? "yt"
+        : info.audio
+          ? "audio"
+          : "text";
     let url = `/api/publicate?type=${type}&id=${info._id}`;
     if (type == "image") url += `&src=${info.image.match(/.{24}$/)[0]}`;
     if (type == "audio") url += `&src=${info.audio.match(/.{24}$/)[0]}`;
@@ -80,96 +60,67 @@ export default function Pub({ info, type }) {
     const response = await res.json();
     if (response.msg == "OK") router.refresh();
   }
-  function addComment(text) {
-    const obj = {
-      avatar: session?.user?.image,
-      author: session?.user?.name,
-      date: new Date(),
-      msg: text,
-    }
-    setCommentaries(prev => [obj, ...prev]);
-  }
-
   return (
     <article
-      style={{ cornerShape: 'squircle', borderRadius: '1rem' }}
+      style={{ cornerShape: "squircle", borderRadius: "1rem" }}
       className={`my-4 inline-block w-full shadow-md bg-[#fafafa]`}
     >
       <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[1px] border-solid border-slate-300">
-        <div className="flex gap-3 items-center">
-          <div className="md:w-[50px] md:h-[50px] w-[40px] h-[40px]">
-            <img
-              src={info.avatar}
-              className="rounded-full cursor-pointer md:w-[50px] md:h-[50px] w-[40px] h-[40px]"
-              alt="avatar user"
-              onClick={() => router.push(`/home?author=${info.author}`)}
-            />
-          </div>
-          <div className="flex flex-col">
-            <p className="md:text-xl text-md font-semibold text-slate-800">
-              {info.author}
-            </p>
-            <p className="text-sm md:text-md text-slate-500">{moment(info.date).fromNow()}</p>
-          </div>
-        </div>
+        <CardHeader pub={info} pubDate={moment(info.date).fromNow()} />
         <div className="relative">
-          <motion.ul
-            animate={opts ? "visible" : "hidden"}
-            initial={{ scale: 0 }}
-            variants={optVars}
-            className="absolute top-0 z-30 right-0 text-black p-2 w-[170px] rounded-lg shadow-md flex flex-col gap-1 items-center justify-center bg-white origin-top-right"
-          >
-            <li className="w-full">
-              <Link
-                href={`/pub?id=${info._id}`}
-                className="cursor-pointer hover:bg-slate-100 rounded w-full flex justify-between p-3"
-              >
-                <p className="font-bold text-md">Visitar</p>
-                <FaArrowRightFromBracket color="black" size={20} />
-              </Link>
-            </li>
-            <li className="cursor-pointer hover:bg-slate-100 rounded w-full flex justify-between p-3">
-              <p className="font-bold text-md">Copiar link</p>
-              <Clipboard pubId={info._id} color="black" />
-            </li>
-            {info.author === session?.user?.name && (
-              <li
-                onClick={() => deletePub(info)}
-                className="cursor-pointer hover:bg-red-200 rounded w-full flex justify-between p-3"
-              >
-                <p className="font-bold text-md text-red-500">Eliminar</p>
-                {delLoader == true ? (
-                  <FaSpinner className="animate-spin" color="red" size={20} />
-                ) : (
-                  <FaDeleteLeft color="red" size={20} />
-                )}
+          {opts && (
+            <ul className="absolute top-0 z-30 right-0 text-black p-2 w-[170px] rounded-lg shadow-md flex flex-col gap-1 items-center justify-center bg-white origin-top-right">
+              <li className="w-full">
+                <Link
+                  href={`/pub?id=${info._id}`}
+                  className="cursor-pointer hover:bg-slate-100 rounded w-full flex justify-between p-3"
+                >
+                  <p className="font-bold text-md">Visitar</p>
+                  <FaArrowRightFromBracket color="black" size={20} />
+                </Link>
               </li>
-            )}
-            <li
-              onClick={() => setOpts(false)}
-              className="cursor-pointer bg-black rounded w-full flex justify-center p-1"
-            >
-              <p className="font-bold text-md text-white">Cancelar</p>
-            </li>
-          </motion.ul>
+              <li className="cursor-pointer hover:bg-slate-100 rounded w-full flex justify-between p-3">
+                <p className="font-bold text-md">Copiar link</p>
+                <Clipboard pubId={info._id} color="black" />
+              </li>
+              {info.author === session?.user?.name && (
+                <li
+                  onClick={() => deletePub(info)}
+                  className="cursor-pointer hover:bg-red-200 rounded w-full flex justify-between p-3"
+                >
+                  <p className="font-bold text-md text-red-500">Eliminar</p>
+                  {delLoader == true ? (
+                    <FaSpinner className="animate-spin" color="red" size={20} />
+                  ) : (
+                    <FaDeleteLeft color="red" size={20} />
+                  )}
+                </li>
+              )}
+              <li
+                onClick={() => setOpts(false)}
+                className="cursor-pointer bg-black rounded w-full flex justify-center p-1"
+              >
+                <p className="font-bold text-md text-white">Cancelar</p>
+              </li>
+            </ul>
+          )}
           <FaEllipsis
             onClick={() => setOpts(!opts)}
             color="black"
             size={25}
-            className="cursor-pointer hover:animate-pulse"
+            className="cursor-pointer"
           />
         </div>
       </div>
       <div id="body">
-        <div
-          id="contentTxt"
-          className="py-4 px-2"
-        >
+        <div id="contentTxt" className="py-4 px-2">
           <h2 className="font-extrabold text-black text-xl p-2 border-l-[6px] border-solid border-black rounded-lg bg-slate-100">
             {info.title}
           </h2>
-          {(info?.description && type !== 'portada') && (
-            <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{info.description}</p>
+          {info?.description && type !== "portada" && (
+            <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">
+              {info.description}
+            </p>
           )}
         </div>
         {info?.image && (
@@ -196,9 +147,9 @@ export default function Pub({ info, type }) {
             onClick={async () => {
               if (likesDissable) return;
               const res = await like(info._id);
-              if(res.status == 'OK') {
+              if (res.status == "OK") {
                 console.log(res);
-                setLikes(prev => prev + 1);
+                setLikes((prev) => prev + 1);
               } else {
                 setLikesDissable(true);
               }
@@ -232,42 +183,10 @@ export default function Pub({ info, type }) {
         </div>
       </div>
       {comment && (
-        <motion.div
-          initial={{ scale: 0 }}
-          variants={optVars}
-          animate={comment ? "visible" : "hidden"}
-        >
-          <div className="px-6 max-h-[720px] overflow-x-hidden overflow-y-auto">
-            {info?.comments.length == 0 ? (
-              <h4 className="font-bold text-xl text-center py-2 text-black">
-                No hay comentarios
-              </h4>
-            ) : (
-              [...commentaries].reverse().map((elem, key) => {
-                return ((
-                  <div key={key} className="py-2 my-2 flex flex-col gap-3">
-                    <div className="flex gap-4 items-center">
-                      <img
-                        src={elem.avatar}
-                        alt="avatar author"
-                        className="rounded-full w-10 h-10 cursor-pointer"
-                        onClick={() => router.push(`/home?author=${elem.author}`)}
-                      />
-                      <div>
-                        <p className="text-md font-bold text-black">{elem.author}</p>
-                        <p className="text-sm text-black">{moment(elem.date).fromNow()}</p>
-                      </div>
-                    </div>
-                    {filterMsg(elem.msg)}
-                  </div>
-                ))
-              })
-            )}
-          </div>
-          <div className="px-6 pb-4">
-            <ComentsForm pubId={info._id} cb={addComment} />
-          </div>
-        </motion.div>
+        <ComentariesBox
+          comments={info?.comments}
+          pubId={info._id.toString()}
+        />
       )}
     </article>
   );

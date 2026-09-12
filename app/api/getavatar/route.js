@@ -8,7 +8,7 @@ export async function GET(req) {
     if(!email) return new Response('BAD');
 
     await db();
-    const { image } = await Users.findOne({email: email}, {image: 1, _id: 0});
+    const { image } = await Users.findOne({email: email}, {image: 1, _id: 0}).lean();
 
     return new Response(image);
 
