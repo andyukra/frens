@@ -64,6 +64,15 @@ export default function Pub({ info, type }) {
     const response = await res.json();
     if (response.msg == "OK") router.refresh();
   }
+  function detectImg(txt) {
+    if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
+      return <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{txt}</p>;
+    } else {
+      return <div className="w-full">
+        <img alt="imagen linda" src={txt} className="w-full h-auto max-h-[500px]" />
+      </div>;
+    }
+  }
   return (
     <article
       style={{ cornerShape: "squircle", borderRadius: "1rem" }}
@@ -121,11 +130,9 @@ export default function Pub({ info, type }) {
           <h2 className="font-extrabold text-black text-xl p-2 border-l-[6px] border-solid border-black rounded-lg bg-slate-100">
             {info.title}
           </h2>
-          {info?.description && type !== "portada" && (
-            <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">
-              {info.description}
-            </p>
-          )}
+          {info?.description &&
+            type !== "portada" &&
+            detectImg(info.description)}
         </div>
         {info?.image && (
           <div className="w-full">
