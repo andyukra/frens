@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { db } from "@/lib/db";
 import Pubs from "@/lib/models/pubs";
-import { getServerSession } from "next-auth";
+import { auth } from "@/auth";
 import { Types } from "mongoose";
 import Users from "@/lib/models/users";
 import blockeds from "@/lib/blocked";
@@ -62,7 +62,7 @@ function get_video_id(input) {
 
 export const POST = async (req) => {
   //GET SESSION
-  const { user } = await getServerSession();
+  const { user } = await auth();
   if (!user) return NextResponse.json({ err: "UNAUTHORIZED" }, { status: 401 });
   if (blockeds.includes(user.email))
     return NextResponse.json({ msg: "BLOCKED USER" });
@@ -207,7 +207,7 @@ export const POST = async (req) => {
 
 export const DELETE = async (req) => {
   //GET SESSION
-  const { user } = await getServerSession();
+  const { user } = await auth();
   if (!user) return NextResponse.json({err: "UNAUTHORIZED"}, { status: 401 });
   if (blockeds.includes(user.email))
     return NextResponse.json({ msg: "BLOCKED USER" });

@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import Pubs from "@/lib/models/pubs";
 import Users from "@/lib/models/users";
 import { v2 as cloudinary } from "cloudinary";
-import { getServerSession } from "next-auth";
+import { auth } from "@/auth";
 import blockeds from "@/lib/blocked";
 
 //CLOUDYNARI CREDENTIALS
@@ -22,7 +22,7 @@ function filterFiles(x) {
 
 export async function like(id) {
   // 1. Verificar autenticación directamente en el servidor por seguridad
-  const session = await getServerSession();
+  const session = await auth();
   if (!session || !session.user) {
     return { status: "UNAUTHORIZED" };
   }
@@ -48,7 +48,7 @@ export async function like(id) {
 
 export async function changePortrait(data) {
   //SECURE AUTH
-  const { user } = await getServerSession();
+  const { user } = await auth();
   if (blockeds.includes(user.email)) return "BLOCKED USER";
   if (user.email !== data.get("email")) return "BAD";
 
@@ -75,7 +75,7 @@ export async function changePortrait(data) {
 
 export async function changeAvatar(data) {
   //SECURE AUTH
-  const { user } = await getServerSession();
+  const { user } = await auth();
   if (blockeds.includes(user.email)) return "BLOCKED USER";
   if (user.email !== data.get("email")) return "BAD";
 
@@ -116,32 +116,33 @@ export async function getData(page, search, author, docsPerPage) {
     const pubs = await Pubs.find({ title: { $regex: search, $options: "i" } })
       .sort({ date: -1 })
       .skip(skip)
-      .limit(docsPerPage);
+      .limit(docsPerPage).lean();
     const count = await Pubs.find({
       title: { $regex: search, $options: "i" },
-    }).countDocuments();
+    }).countDocuments().lean();
     return { pubs, count };
   }
   if (author !== "all" && !search) {
     const pubs = await Pubs.find({ author: author })
       .sort({ date: -1 })
       .skip(skip)
-      .limit(docsPerPage);
-    const count = await Pubs.find({ author: author }).countDocuments();
+      .limit(docsPerPage).lean();
+    const count = await Pubs.find({ author: author }).countDocuments().lean();
     return { pubs, count };
   }
   const pubs = await Pubs.find({})
     .sort({ date: -1 })
     .skip(skip)
-    .limit(docsPerPage);
-  const count = await Pubs.find({}).countDocuments();
+    .limit(docsPerPage).lean();
+  const count = await Pubs.find({}).countDocuments().lean();
   return { pubs, count };
 }
 
 export async function getPub(id) {
   await db();
   try {
-    return await Pubs.findById(id).lean();
+    const pub = await Pubs.findById(id).lean();
+    return JSON.parse(JSON.stringify(pub));
   } catch (error) {
     return "EMPTY";
   }

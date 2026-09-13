@@ -9,6 +9,7 @@ import YtPlayer from "@/components/YtPlayer";
 import CardHeader from "@/components/CardHeader";
 import { getPub } from "@/app/actions/serverActions";
 
+
 moment.locale("es");
 
 function Empty() {
@@ -28,7 +29,8 @@ function Empty() {
   );
 }
 
-export default async function Pub({ searchParams }) {
+export default async function Pub(props) {
+  const searchParams = await props.searchParams;
   const id = searchParams.id;
 
   if (!id || !/^\w*$/.test(id)) {
@@ -127,7 +129,7 @@ export default async function Pub({ searchParams }) {
             {/* COMMENTS */}
             <ComentariesBox
               comments={pub.comments || []}
-              pubId={pub._id}
+              pubId={pub._id.toString()}
             />
           </article>
         </section>

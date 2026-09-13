@@ -4,6 +4,10 @@ import PubsListSkeleton from "@/components/PubsListSkeleton";
 import ExtrasSkeleton from "@/components/ExtrasSkeleton";
 import { Suspense } from "react";
 
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+
+
 export const metadata = {
   title: "frens - home",
 };
@@ -11,7 +15,8 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 const docsPerPage = 20;
 //INIT
-export default async function Home({ searchParams }) {
+export default async function Home(props) {
+  const searchParams = await props.searchParams;
   //FILTER PARAMS
   function filtroPage() {
     if (

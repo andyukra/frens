@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import Pubs from '@/lib/models/pubs';
 import Users from '@/lib/models/users';
-import { getServerSession } from 'next-auth';
+import { auth } from "@/auth";
 import { v2 as cloudinary } from "cloudinary";
 import blockeds from '@/lib/blocked';
 
@@ -19,7 +19,7 @@ function filterImg(x) {
 }
 
 export async function POST(req) {
-    const { user } = await getServerSession();
+    const { user } = await auth();
     if(!user) return NextResponse.json({status: 403});
     if(blockeds.includes(user.email)) return NextResponse.json({msg: 'BLOCKED USER'});
     const data = await req.formData();
