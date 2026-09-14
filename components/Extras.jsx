@@ -20,7 +20,7 @@ export default async function Extras() {
                   className="h-full hover:scale-[1.04] transition-all"
                   style={{ flex: "0 0 300px", cornerShape: "squircle", borderRadius: "1.5rem", border: "0.5rem solid black" }}
                 >
-                  <Link href={`/pub?id=${elem._id}`}>
+                  <Link href={`/pub/${elem._id}`}>
                     <img
                       className="h-full w-full object-cover"
                       src={elem.image}
