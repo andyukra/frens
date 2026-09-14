@@ -1,8 +1,9 @@
-import Link from "next/link";
+import { Suspense } from "react";
 import moment from "moment";
 import "moment/locale/es";
-import { getPub } from "@/app/actions/serverActions";
-//COMPONENTS
+
+import { getPub } from "@/lib/dbConsults";
+
 import ComentariesBox from "@/components/ComentariesBox";
 import YtPlayer from "@/components/YtPlayer";
 import CardHeader from "@/components/CardHeader";
@@ -10,34 +11,30 @@ import BackButton from "@/components/BackButton";
 
 moment.locale("es");
 
-function detectImg(txt) {
-    if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
-      return <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{txt}</p>;
-    } else {
-      return <div className="w-full">
-        <img alt="imagen linda" src={txt} className="mt-4 w-full h-auto max-h-[500px]" 
-          style={{cornerShape: "squircle", borderRadius: "1rem"}}
-        />
-      </div>;
-    }
-}
-
 function Empty() {
   return (
     <main className="min-h-[calc(100dvh-64px)] flex flex-col items-center justify-center gap-5 px-4">
       <h1 className="text-3xl md:text-4xl font-bold text-center">
         No se ha encontrado
       </h1>
+
       <BackButton />
     </main>
   );
 }
 
-export default async function Pub(props) {
-  const searchParams = await props.searchParams;
-  const id = searchParams.id;
+export default function Pub({ params }) {
+  return (
+    <Suspense fallback={<h1>Cargando publicación...</h1>}>
+      <Publication params={params} />
+    </Suspense>
+  );
+}
 
-  if (!id || !/^\w*$/.test(id)) {
+async function Publication({ params }) {
+  const { id } = await params;
+
+  if (!id || !/^[a-f\d]{24}$/i.test(id)) {
     return <Empty />;
   }
 
@@ -49,6 +46,7 @@ export default async function Pub(props) {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-8">
+
       {/* BACK */}
       <div className="py-4">
         <BackButton />
@@ -56,9 +54,11 @@ export default async function Pub(props) {
 
       {/* CONTENT */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
+
         {/* PUBLICATION */}
         <section>
           <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
             {/* HEADER */}
             <div className="p-5">
               <CardHeader
@@ -76,6 +76,7 @@ export default async function Pub(props) {
 
             {/* MEDIA */}
             <div className="p-5">
+
               {pub.image && (
                 <div className="overflow-hidden rounded-xl">
                   <img
@@ -101,36 +102,39 @@ export default async function Pub(props) {
                   />
                 </div>
               )}
+
             </div>
 
             {/* DESCRIPTION */}
             {pub.description && (
               <div className="border-t border-gray-200 px-5 py-5">
                 <p className="whitespace-pre-wrap leading-7 text-gray-700">
-                  {detectImg(pub.description)}
+                  {pub.description}
                 </p>
               </div>
             )}
+
           </article>
         </section>
 
         {/* COMMENTS */}
         <section className="lg:sticky lg:top-4">
           <article className="flex max-h-[calc(100dvh-2rem)] min-h-[500px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            {/* HEADER */}
+
             <header className="border-b border-gray-200 px-5 py-4">
               <h2 className="text-xl font-bold text-black">
                 Comentarios
               </h2>
             </header>
 
-            {/* COMMENTS */}
             <ComentariesBox
               comments={pub.comments || []}
               pubId={pub._id.toString()}
             />
+
           </article>
         </section>
+
       </div>
     </main>
   );

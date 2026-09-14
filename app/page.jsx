@@ -1,12 +1,8 @@
 
 import Link from 'next/link';
 import { Lobster } from 'next/font/google';
-import { getAvatars } from "@/app/actions/serverActions";
+import { getAvatars } from "@/lib/dbConsults";
 import AvatarsCarrousel from '@/components/AvatarsCarrousel';
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-
 
 const lobster = Lobster({ subsets: ['latin'], weight: ['400'] });
 const avatars = await getAvatars(30);

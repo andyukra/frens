@@ -31,7 +31,6 @@ moment.locale("es");
 
 export default function Pub({ info, type }) {
   //HOOKS
-  info = JSON.parse(info);
   const { data: session } = useSession();
   const router = useRouter();
   const [comment, setComment] = useState(false);
@@ -88,7 +87,7 @@ export default function Pub({ info, type }) {
             <ul className="absolute top-0 z-30 right-0 text-black p-2 w-[170px] rounded-lg shadow-md flex flex-col gap-1 items-center justify-center bg-white origin-top-right">
               <li className="w-full">
                 <Link
-                  href={`/pub?id=${info._id}`}
+                  href={`/pub/${info._id}`}
                   className="cursor-pointer hover:bg-slate-100 rounded w-full flex justify-between p-3"
                 >
                   <p className="font-bold text-md">Visitar</p>

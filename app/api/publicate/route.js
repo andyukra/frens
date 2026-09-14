@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { Types } from "mongoose";
 import Users from "@/lib/models/users";
 import blockeds from "@/lib/blocked";
+import { revalidateTag } from 'next/cache';
 
 const ONESIGNAL_API_KEY = process.env.ONESIGNAL_API_KEY;
 const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID;
@@ -105,6 +106,11 @@ export const POST = async (req) => {
       });
       //SEND WEB PUSH NOTIFICATION
       await webPushNotif(title.trim(), "", description.trim());
+
+      //REVALIDATE CACHE
+      revalidateTag("pubsPage-1");
+      revalidateTag("pubsPage-2");
+
       return NextResponse.json({ msg: "OK" });
     }
     //IMAGE
@@ -144,6 +150,10 @@ export const POST = async (req) => {
       //SEND WEB PUSH NOTIFICATION
       await webPushNotif(title.trim(), url, description.trim());
 
+      //REVALIDATE CACHE
+      revalidateTag("pubsPage-1");
+      revalidateTag("pubsPage-2");
+
       return NextResponse.json({ msg: "OK" });
     }
     //VIDEO
@@ -158,6 +168,10 @@ export const POST = async (req) => {
         title: data.get("title").trim(),
         yt: yt_id,
       });
+
+      //REVALIDATE CACHE
+      revalidateTag("pubsPage-1");
+      revalidateTag("pubsPage-2");
 
       return NextResponse.json({ msg: "OK" });
     }
@@ -197,6 +211,11 @@ export const POST = async (req) => {
       });
       //WEBPUSH NOTIFICATION
       await webPushNotif(title.trim(), "", description.trim());
+
+      //REVALIDATE CACHE
+      revalidateTag("pubsPage-1");
+      revalidateTag("pubsPage-2");
+
       return NextResponse.json({ msg: "OK" });
     }
   }

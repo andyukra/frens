@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { db } from "@/lib/db";
-import Pubs from "@/lib/models/pubs";
+import { getExtras } from "@/lib/dbConsults";
 
 export default async function Extras() {
-  await db();
-  const extras = await Pubs.aggregate([{ $sample: { size: 10 } }]);
+  const extras = await getExtras(10);
   return (
     <>
       <h2 className="text-2xl font-bold text-center tracking-widest p-5 bg-black w-full rounded-lg shadow-md">

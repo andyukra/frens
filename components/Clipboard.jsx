@@ -7,7 +7,7 @@ import { useState } from 'react';
 export default function Clipboard({ pubId, color = "black" }) {
     //HOOKS
     const [state, setState] = useState(false);
-  const url = `https://frens.site/pub?id=${pubId}`;
+  const url = `https://frens.site/pub/${pubId}`;
   return (
     <>
         {state && (<Toast msg={'Link copiado, lo puede pegar donde quiera'}/>)}

@@ -4,53 +4,19 @@ import PubsListSkeleton from "@/components/PubsListSkeleton";
 import ExtrasSkeleton from "@/components/ExtrasSkeleton";
 import { Suspense } from "react";
 
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-
-
 export const metadata = {
   title: "frens - home",
 };
 
-export const dynamic = "force-dynamic";
 const docsPerPage = 20;
 //INIT
-export default async function Home(props) {
-  const searchParams = await props.searchParams;
-  //FILTER PARAMS
-  function filtroPage() {
-    if (
-      !searchParams.page ||
-      isNaN(parseInt(searchParams.page)) ||
-      /^\W*$/.test(searchParams.page)
-    )
-      return 1;
-    return searchParams.page;
-  }
-  function filtroSearch() {
-    if (!searchParams.search || /^\W*$/.test(searchParams.search)) return "";
-    return searchParams.search;
-  }
-  function filtroAuthor() {
-    if (!searchParams.author || /^\W*$/.test(searchParams.author)) return "all";
-    return searchParams.author;
-  }
-  //INITIALIZE
-  const page = filtroPage();
-  const search = filtroSearch();
-  const authorPage = filtroAuthor();
-
+export default async function Home({ searchParams }) {
   return (
     <main className="lg:px-20 px-2">
-      {authorPage !== 'all' ? (
-        <>
-        <h1 className="text-center text-2xl font-bold my-5 bg-black py-2 shadow-md">{authorPage}</h1>
-        </>
-      ) : ''}
       <section className="flex md:gap-5 mb-5">
         <div className="flex flex-col gap-5 w-full" id="pubs">
           <Suspense fallback={<PubsListSkeleton />}>
-            <PubsList page={page} author={authorPage} search={search} docsPerPage={docsPerPage}/>
+            <PubsList searchParams={searchParams} docsPerPage={docsPerPage}/>
           </Suspense>
           <Suspense fallback={<ExtrasSkeleton />}>
             <Extras />
