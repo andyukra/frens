@@ -1,16 +1,26 @@
 import Link from "next/link";
 import moment from "moment";
 import "moment/locale/es";
-
-import { FaArrowLeft } from "react-icons/fa6";
-
+import { getPub } from "@/app/actions/serverActions";
+//COMPONENTS
 import ComentariesBox from "@/components/ComentariesBox";
 import YtPlayer from "@/components/YtPlayer";
 import CardHeader from "@/components/CardHeader";
-import { getPub } from "@/app/actions/serverActions";
-
+import BackButton from "@/components/BackButton";
 
 moment.locale("es");
+
+function detectImg(txt) {
+    if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
+      return <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{txt}</p>;
+    } else {
+      return <div className="w-full">
+        <img alt="imagen linda" src={txt} className="mt-4 w-full h-auto max-h-[500px]" 
+          style={{cornerShape: "squircle", borderRadius: "1rem"}}
+        />
+      </div>;
+    }
+}
 
 function Empty() {
   return (
@@ -18,13 +28,7 @@ function Empty() {
       <h1 className="text-3xl md:text-4xl font-bold text-center">
         No se ha encontrado
       </h1>
-
-      <Link
-        href="/home"
-        className="w-full max-w-[200px] rounded-lg bg-black px-4 py-2 text-center font-bold text-white transition hover:bg-gray-800"
-      >
-        Volver
-      </Link>
+      <BackButton />
     </main>
   );
 }
@@ -47,13 +51,7 @@ export default async function Pub(props) {
     <main className="mx-auto w-full max-w-6xl px-4 pb-8">
       {/* BACK */}
       <div className="py-4">
-        <Link
-          href="/home"
-          className="inline-flex items-center gap-2 rounded-lg p-2 text-gray-700 transition hover:bg-gray-100 hover:text-black"
-        >
-          <FaArrowLeft size={20} />
-          <span className="font-medium">Volver</span>
-        </Link>
+        <BackButton />
       </div>
 
       {/* CONTENT */}
@@ -109,7 +107,7 @@ export default async function Pub(props) {
             {pub.description && (
               <div className="border-t border-gray-200 px-5 py-5">
                 <p className="whitespace-pre-wrap leading-7 text-gray-700">
-                  {pub.description}
+                  {detectImg(pub.description)}
                 </p>
               </div>
             )}

@@ -69,7 +69,9 @@ export default function Pub({ info, type }) {
       return <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{txt}</p>;
     } else {
       return <div className="w-full">
-        <img alt="imagen linda" src={txt} className="w-full h-auto max-h-[500px]" />
+        <img alt="imagen linda" src={txt} className="mt-4 w-full h-auto max-h-[500px]" 
+          style={{cornerShape: "squircle", borderRadius: "1rem"}}
+        />
       </div>;
     }
   }
@@ -80,6 +82,7 @@ export default function Pub({ info, type }) {
     >
       <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[1px] border-solid border-slate-300">
         <CardHeader pub={info} pubDate={moment(info.date).fromNow()} />
+        {/* ACTIONS */}
         <div className="relative">
           {opts && (
             <ul className="absolute top-0 z-30 right-0 text-black p-2 w-[170px] rounded-lg shadow-md flex flex-col gap-1 items-center justify-center bg-white origin-top-right">
@@ -152,6 +155,7 @@ export default function Pub({ info, type }) {
           ></audio>
         )}
       </div>
+      {/* SOCIAL ACTIONS */}
       <div className="flex items-center justify-around py-3 rounded-b-lg border-t-[1px] border-solid border-slate-300">
         <div className="flex gap-3">
           <FaRegThumbsUp
