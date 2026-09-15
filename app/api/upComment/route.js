@@ -30,7 +30,7 @@ export async function POST(req) {
 
     if(!id) return NextResponse.json({err: 'BAD ID'});
     if(!file && !comment) return NextResponse.json({err: 'BAD EMPTY COMMENT'});
-    if(comment && comment.lenght > 500) return NextResponse.json({err: 'BAD LARGE COMMENT'});
+    if(comment && comment.length > 500) return NextResponse.json({err: 'BAD LARGE COMMENT'});
 
     //FOR COMMENTS
     if(comment) { 

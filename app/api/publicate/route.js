@@ -257,8 +257,9 @@ export const DELETE = async (req) => {
       if (err) return NextResponse.json({ err });
     });
   }
-
+  //revaldiate cache
   revalidateTag("pubsPage-1");
   revalidateTag("pubsPage-2");
+
   return NextResponse.json({ msg: "OK" });
 };
