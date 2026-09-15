@@ -5,7 +5,7 @@ import Users from '@/lib/models/users';
 import { auth } from "@/auth";
 import { v2 as cloudinary } from "cloudinary";
 import blockeds from '@/lib/blocked';
-
+import { revalidateTag } from 'next/cache';
 //CLOUDYNARI CREDENTIALS
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
@@ -41,6 +41,10 @@ export async function POST(req) {
             avatar: imgDB,
             msg: comment.trim()
         }} });
+
+        //REVALIDATE CACHE
+        revalidateTag("pubsPage-1");
+
         return NextResponse.json({msg: 'OK', comment: comment.trim()});
     }
 
@@ -66,6 +70,10 @@ export async function POST(req) {
             avatar: imgDB,
             msg: url
         }} });
+
+        //REVALIDATE CACHE
+        revalidateTag("pubsPage-1");
+
         return NextResponse.json({msg: 'OK', comment: url});
 
     }
