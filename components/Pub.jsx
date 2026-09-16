@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { useImageViewer } from '@/lib/stores/dialogs';
 //COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
 import { like } from "@/app/actions/serverActions";
@@ -38,6 +39,8 @@ export default function Pub({ info, type }) {
   const [delLoader, setDelLoader] = useState(false);
   const [likes, setLikes] = useState(info.likes.length);
   const [likesDissable, setLikesDissable] = useState(false);
+
+  const { setData: setImageData } = useImageViewer();
 
   async function deletePub(info) {
     if (info.author !== session?.user?.name) return;
@@ -138,11 +141,13 @@ export default function Pub({ info, type }) {
         </div>
         {info?.image && (
           <div className="w-full">
-            <img
-              alt="imagen linda"
-              src={info.image}
-              className="w-full h-auto"
-            />
+            <button className="w-full" onClick={() => setImageData(info.image, info.title)}>
+              <img
+                alt="imagen linda"
+                src={info.image}
+                className="w-full h-auto"
+              />
+            </button>
           </div>
         )}
         {info?.yt && <YtPlayer link={info.yt} />}

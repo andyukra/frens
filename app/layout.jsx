@@ -2,11 +2,9 @@ import "./globals.css";
 import Provider from "./Provider";
 import { Quicksand } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+//COMPONENTS
 import OneSignalInit from "@/components/OneSignalInit";
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-
+import ImageViewer from "@/components/ImageViewer";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "600"] });
 
@@ -20,6 +18,7 @@ export default function RootLayout({ children }) {
       <body style={quicksand.style}>
         <OneSignalInit />
         <Provider>
+          <ImageViewer />
           {children}
         </Provider>
         <Analytics />

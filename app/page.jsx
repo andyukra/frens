@@ -5,9 +5,9 @@ import { getAvatars } from "@/lib/dbConsults";
 import AvatarsCarrousel from '@/components/AvatarsCarrousel';
 
 const lobster = Lobster({ subsets: ['latin'], weight: ['400'] });
-const avatars = await getAvatars(30);
 
-export default function Index() {
+export default async function Index() {
+    const avatars = await getAvatars(30);
     return(
         <main>
             <section className='text-black lg:grid lg:grid-cols-2 px-10 pb-[64px] gap-5 items-center h-[calc(100dvh-64px)] flex justify-center'>

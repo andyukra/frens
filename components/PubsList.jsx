@@ -1,6 +1,7 @@
+import { getUncacheableData, getCacheableData } from "@/lib/dbConsults";
+//COMPONENTS
 import Pub from "@/components/Pub";
 import Pagination from "@/components/Pagination";
-import { getUncacheableData, getCacheableData } from "@/lib/dbConsults";
 
 export default async function PubsList({ searchParams, docsPerPage  }) {
   //RESOLVE PARAMS PROMISE
