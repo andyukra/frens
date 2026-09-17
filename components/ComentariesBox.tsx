@@ -3,23 +3,38 @@
 import Comentary from "@/components/Comentary";
 import ComentsForm from "@/components/ComentsForm";
 import { useSession } from "next-auth/react";
+import React from "react";
 import { useState } from "react";
 
-export default function ComentariesBox({ comments, pubId }) {
+//TYPES
+type Comment = {
+  author: string
+  avatar: string
+  date: Date
+  msg: string
+  _id: string
+}
+type Props = {
+  comments: Comment[]
+  pubId: string
+}
+//MAIN FC
+export default function ComentariesBox({ comments, pubId }:Props) {
   const { data: session } = useSession();
 
-  const [commentaries, setCommentaries] = useState(
+  const [commentaries, setCommentaries] = useState<Comment[]>(
     comments || []
   );
 
-  function addComment(text) {
+  function addComment(text: string) {
+    if(!session || !session.user) return;
     const obj = {
-      avatar: session?.user?.image,
-      author: session?.user?.name,
+      avatar: session.user.image,
+      author: session.user.name,
       date: new Date(),
       msg: text,
     };
-
+    //@ts-ignore
     setCommentaries((prev) => [obj, ...prev]);
   }
 
