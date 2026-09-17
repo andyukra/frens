@@ -84,13 +84,14 @@ export default function ComentsForm({ pubId, cb }: Props) {
 
   return (
     <>
-      <Turnstile
-        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-        onSuccess={setToken}
-        onError={() => console.error("Error en Turnstile")}
-        onExpire={() => setToken(null)}
-      />
       {status == "authenticated" && (
+        <>
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+          onSuccess={setToken}
+          onError={() => console.error("Error en Turnstile")}
+          onExpire={() => setToken(null)}
+        />
         <form
           onSubmit={(e) => upComment(e, "TEXT")}
           className="w-full flex gap-4 items-center pt-2"
@@ -105,6 +106,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
               required
               className={`bg-white w-full py-2 px-4 rounded-lg focus:outline-none text-black ${commentTxt.length > 500 && "ring-2 ring-red-600 bg-red-200"}`}
               value={commentTxt}
+              disabled={!token}
               onChange={(e) => setCommentTxt(e.target.value)}
             />
             <input
@@ -130,6 +132,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
             </button>
           )}
         </form>
+        </>
       )}
     </>
   );

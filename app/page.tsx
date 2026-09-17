@@ -16,10 +16,12 @@ export default async function Index() {
                     <p
                         //@ts-ignore
                         style={{cornerShape: 'squircle', borderRadius: '1rem'}}
-                        className='md:text-2xl text-lg font-[600] p-4 bg-[#0005] backdrop-blur-sm ring-2 ring-white'
+                        className='md:text-2xl text-lg font-[600] p-4 bg-[#0005] backdrop-blur-sm ring-2 ring-yellow-100'
                     >Una sencilla página de noticias, chismes, capturas y muchas mas tonterías del chat, sean todos bienvenidos, espero que puedan disfrutar el contenido que aqui se presenta, no se lo tomen a mal, es solo para divertirse, muchas gracias y a disfrutar!</p>
                     <Link href="/home">
-                        <button 
+                        <button
+                        //@ts-ignore
+                        style={{cornerShape: 'squircle', borderRadius: '1rem'}}
                         className='mt-2 px-5 py-3 pointer font-[600] text-white bg-black'>Visitar</button>
                     </Link>
                     <AvatarsCarrousel avatars={avatars} />
