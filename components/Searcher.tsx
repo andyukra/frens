@@ -22,8 +22,8 @@ export default function Searcher() {
         className="md:py-2 px-4 py-1 rounded-full md:w-[35vw] w-[50vw] bg-black placeholder-white border-2 border-solid border-white focus:outline-none"
         type="search"
         placeholder="Buscar..."
-        minLength="3"
-        maxLength="25"
+        minLength={3}
+        maxLength={25}
         required
         pattern="^\w*$"
         value={pattern}

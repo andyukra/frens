@@ -2,8 +2,11 @@
 
 import { FaImage, FaSpinner, FaHeadphones, FaYoutube } from "react-icons/fa6";
 import { useState } from "react";
-
-export default function PublicateForm({ type }) {
+//TYPES
+type PubType = "image" | "video" | "audio" | "text";
+type Props = { type: PubType }
+//MAIN FC
+export default function PublicateForm({ type }:Props) {
   //HOOKS
   const [imgSrc, setImgSrc] = useState(null);
   const [file, setFile] = useState(null);
@@ -153,8 +156,8 @@ export default function PublicateForm({ type }) {
       )}
       <input
         required
-        maxLength="50"
-        minLength="1"
+        maxLength={50}
+        minLength={1}
         className={`bg-slate-200 rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none ${title.length > 50 && "ring-2 ring-red-600 bg-red-200"}`}
         type="text"
         placeholder="Título"
@@ -167,8 +170,8 @@ export default function PublicateForm({ type }) {
             className="bg-slate-200 rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none"
             type="url"
             required
-            minLength="1"
-            maxLength="250"
+            minLength={1}
+            maxLength={250}
             placeholder="https://youtu.be/....."
             value={yt}
             onChange={(e) => setYt(e.target.value)}
@@ -179,10 +182,10 @@ export default function PublicateForm({ type }) {
       {type !== "video" && (
         <textarea
           required={type == "text" ? true : false}
-          maxLength="500"
-          minLength="1"
+          maxLength={500}
+          minLength={1}
           className={`bg-slate-200 resize-none rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none ${description.length > 500 && "ring-2 ring-red-600 bg-red-200"}`}
-          rows="3"
+          rows={3}
           placeholder="Descripción"
           value={description}
           onChange={(e) => setDescription(e.target.value)}

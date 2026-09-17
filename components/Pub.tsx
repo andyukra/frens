@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import moment from "moment";
+//@ts-ignore
 import "moment/locale/es";
 import {
   FaEllipsis,
@@ -17,20 +18,26 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useImageViewer } from '@/lib/stores/dialogs';
+import { Nunito } from "next/font/google";
 //COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
 import { like } from "@/app/actions/serverActions";
 import Clipboard from "@/components/Clipboard";
 import CardHeader from "@/components/CardHeader";
 import BasicSkeleton from "@/components/BasicSkeleton";
-
+//TYPES IMPORT
+import type { Publication } from '@/lib/types/publication';
+//GLOBAL VARS
+moment.locale("es");
 const ComentariesBox = dynamic(() => import("@/components/ComentariesBox"), {
   loading: () => <BasicSkeleton />,
 });
+const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
 
-moment.locale("es");
-
-export default function Pub({ info, type }) {
+//TYPES
+type Props = { info: Publication }
+//MAIN FC
+export default function Pub({ info }:Props) {
   //HOOKS
   const { data: session } = useSession();
   const router = useRouter();
@@ -42,7 +49,7 @@ export default function Pub({ info, type }) {
 
   const { setData: setImageData } = useImageViewer();
 
-  async function deletePub(info) {
+  async function deletePub(info:Publication) {
     if (info.author !== session?.user?.name) return;
     if (!confirm("Seguro que desea eliminar esto?")) return;
     setDelLoader(true);
@@ -66,12 +73,13 @@ export default function Pub({ info, type }) {
     const response = await res.json();
     if (response.msg == "OK") router.refresh();
   }
-  function detectImg(txt) {
+  function detectImg(txt:string) {
     if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
-      return <p className="mt-4 rounded-lg px-3 font-bold text-slate-500">{txt}</p>;
+      return <p className="mt-2 rounded-lg font-bold text-white">{txt}</p>;
     } else {
       return <div className="w-full">
         <img alt="imagen linda" src={txt} className="mt-4 w-full h-auto max-h-[500px]" 
+          //@ts-ignore
           style={{cornerShape: "squircle", borderRadius: "1rem"}}
         />
       </div>;
@@ -79,10 +87,11 @@ export default function Pub({ info, type }) {
   }
   return (
     <article
+      //@ts-ignore
       style={{ cornerShape: "squircle", borderRadius: "1rem" }}
-      className={`my-4 inline-block w-full shadow-md bg-[#fafafa]`}
+      className={`my-4 inline-block w-full bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100`}
     >
-      <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[1px] border-solid border-slate-300">
+      <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[2px] border-solid border-yellow-100">
         <CardHeader pub={info} pubDate={moment(info.date).fromNow()} />
         {/* ACTIONS */}
         <div className="relative">
@@ -124,28 +133,30 @@ export default function Pub({ info, type }) {
           )}
           <FaEllipsis
             onClick={() => setOpts(!opts)}
-            color="black"
+            color="#fef9c3"
             size={25}
             className="cursor-pointer"
           />
         </div>
       </div>
       <div id="body">
-        <div id="contentTxt" className="py-4 px-2">
-          <h2 className="font-extrabold text-black text-xl p-2 border-l-[6px] border-solid border-black rounded-lg bg-slate-100">
+        <div id="contentTxt" className="py-4 px-4">
+          <h2
+            //@ts-ignore
+            style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
+            className={`${nunito.className} font-[900] text-yellow-300 text-xl p-2 bg-[#000] ring-2 ring-yellow-300`}
+          >
             {info.title}
           </h2>
-          {info?.description &&
-            type !== "portada" &&
-            detectImg(info.description)}
+          {info?.description && detectImg(info.description)}
         </div>
         {info?.image && (
-          <div className="w-full">
+          <div className="w-full flex">
             <button className="w-full" onClick={() => setImageData(info.image, info.title)}>
               <img
                 alt="imagen linda"
                 src={info.image}
-                className="w-full h-auto"
+                className="w-full h-full"
               />
             </button>
           </div>
@@ -160,7 +171,7 @@ export default function Pub({ info, type }) {
         )}
       </div>
       {/* SOCIAL ACTIONS */}
-      <div className="flex items-center justify-around py-3 rounded-b-lg border-t-[1px] border-solid border-slate-300">
+      <div className="flex items-center justify-around py-3 rounded-b-lg border-t-[2px] border-solid border-yellow-100">
         <div className="flex gap-3">
           <FaRegThumbsUp
             onClick={async () => {
@@ -173,32 +184,32 @@ export default function Pub({ info, type }) {
                 setLikesDissable(true);
               }
             }}
-            color="black"
+            color="#fef9c3"
             size={20}
             className={`cursor-pointer hover:animate-pulse ${
               likesDissable ? "pointer-events-none" : ""
             }`}
           />
-          <p className="font-bold text-black">{likes}</p>
+          <p className="font-bold text-yellow-100">{likes}</p>
         </div>
         <div className="flex gap-3">
           <FaRegStar
-            color="black"
+            color="#fef9c3"
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold text-black">0</p>
+          <p className="font-bold text-yellow-100">0</p>
         </div>
         <div className="flex gap-3">
           <FaRegComment
             onClick={() => {
               setComment(!comment);
             }}
-            color="black"
+            color="#fef9c3"
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold text-black">{info?.comments.length}</p>
+          <p className="font-bold text-yellow-100">{info?.comments.length}</p>
         </div>
       </div>
       {comment && (

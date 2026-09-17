@@ -2,8 +2,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FaYoutube } from "react-icons/fa6";
-
-export default function YtPlayer({ link }) {
+//TYPES
+type Props = { link: string }
+//MAIN FC
+export default function YtPlayer({ link }:Props) {
   const [state, setState] = useState(false);
 
   return (

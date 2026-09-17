@@ -20,15 +20,17 @@ function filterMsg(msg: string, setData: (url: string, alt: string) => void) {
     return (
       <button className="w-full" onClick={() => setData(msg, "comentario con imágen")}>
         <img
+          //@ts-ignore
+          style={{cornerShape: 'squircle', borderRadius: '1rem'}}
           src={msg}
           alt="comentario con imagen"
-          className="max-w-[200px] max-h-[400px] rounded-lg"
+          className="max-w-[200px] max-h-[400px] ring-[0.2rem] ring-yellow-500"
         />
       </button>
     );
   } else {
     return (
-      <p className="p-3 rounded-lg bg-slate-200 text-black break-word">{msg}</p>
+      <p className="p-3 font-bold rounded-lg bg-yellow-100 text-black break-word">{msg}</p>
     );
   }
 }
@@ -37,12 +39,12 @@ export default function Comentary({ elem }: {elem:Comment}) {
   const { setData: setImageData } = useImageViewer();
   return (
     <article
-      className="my-4 py-2 px-4 rounded-lg"
+      className="py-2 px-4 rounded-lg"
     >
       {/* HEADER */}
 	  <CardHeader pub={elem} pubDate={moment(elem.date).fromNow()} />
       {/* BODY */}
-      <div>{filterMsg(elem.msg, setImageData)}</div>
+      <div className="mt-2">{filterMsg(elem.msg, setImageData)}</div>
     </article>
   );
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import { Suspense } from "react";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
@@ -12,7 +10,6 @@ export default function Provider({ children }) {
           <Navbar />
         </header>
       </Suspense>
-
       {children}
     </SessionProvider>
   );

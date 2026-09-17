@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { getExtras } from "@/lib/dbConsults";
+//TYPES IMPORT
+import type { Publication } from '@/lib/types/publication';
 
 export default async function Extras() {
-  const extras = await getExtras(10);
+  const extras:Publication[] = await getExtras(10);
+  console.log(extras)
   return (
     <>
       <h2 className="text-2xl font-bold text-center tracking-widest p-5 bg-black w-full rounded-lg shadow-md">
@@ -18,6 +21,7 @@ export default async function Extras() {
                 <article
                   key={key}
                   className="h-full hover:scale-[1.04] transition-all"
+                  //@ts-ignore
                   style={{ flex: "0 0 300px", cornerShape: "squircle", borderRadius: "1.5rem", border: "0.5rem solid black" }}
                 >
                   <Link href={`/pub/${elem._id}`}>
@@ -25,6 +29,7 @@ export default async function Extras() {
                       className="h-full w-full object-cover"
                       src={elem.image}
                       alt={elem.title}
+                      //@ts-ignore
                       style={{cornerShape: "squircle", borderRadius: "1.5rem"}}
                     />
                   </Link>
@@ -38,6 +43,7 @@ export default async function Extras() {
                 <article
                   key={key}
                   className="h-full rounded-xl hover:scale-[1.04] transition-all"
+                  //@ts-ignore
                   style={{ flex: "0 0 300px", cornerShape: "squircle", borderRadius: "1.5rem", border: "0.5rem solid black" }}
                 >
                   <Link href={`/pub?id=${elem._id}`}>
@@ -45,6 +51,7 @@ export default async function Extras() {
                       className="h-full w-full object-cover"
                       src={elem.image}
                       alt={elem.title}
+                      //@ts-ignore
                       style={{cornerShape: "squircle", borderRadius: "1.5rem"}}
                     />
                   </Link>

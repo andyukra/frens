@@ -4,7 +4,10 @@ import { FaShareNodes } from "react-icons/fa6";
 import Toast from "@/components/Toast";
 import { useState } from 'react';
 
-export default function Clipboard({ pubId, color = "black" }) {
+//TYPES
+type Props = { pubId: string, color: string }
+//MAIN FC
+export default function Clipboard({ pubId, color = "black" }:Props) {
     //HOOKS
     const [state, setState] = useState(false);
   const url = `https://frens.site/pub/${pubId}`;

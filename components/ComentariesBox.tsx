@@ -1,19 +1,14 @@
 "use client";
 
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+//COMPONENTS
 import Comentary from "@/components/Comentary";
 import ComentsForm from "@/components/ComentsForm";
-import { useSession } from "next-auth/react";
-import React from "react";
-import { useState } from "react";
+//TYPES
+import type { Comment } from '@/lib/types/comment';
 
 //TYPES
-type Comment = {
-  author: string
-  avatar: string
-  date: Date
-  msg: string
-  _id: string
-}
 type Props = {
   comments: Comment[]
   pubId: string
@@ -44,7 +39,7 @@ export default function ComentariesBox({ comments, pubId }:Props) {
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {commentaries.length === 0 ? (
           <div className="flex h-full items-center justify-center">
-            <h4 className="text-center text-lg font-medium text-gray-400">
+            <h4 className="text-center text-lg font-medium text-yellow-100">
               No hay comentarios
             </h4>
           </div>
@@ -61,7 +56,7 @@ export default function ComentariesBox({ comments, pubId }:Props) {
       </div>
 
       {/* FORM */}
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t-2 border-yellow-100 p-4">
         <ComentsForm
           pubId={pubId}
           cb={addComment}

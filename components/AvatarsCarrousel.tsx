@@ -1,5 +1,8 @@
 
-export default function AvatarsCarrousel({ avatars }) {
+//TYPES
+type Avatar = {image: string};
+//MAIN FC
+export default function AvatarsCarrousel({ avatars }:Record<string, Avatar[]>) {
   return (
 	<div className="mt-5 md:block hidden">
 		<h2 className="text-2xl font-bold mb-4">Usuarios recientes</h2>

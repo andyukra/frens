@@ -1,13 +1,15 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-
-export default function Pagination({total, docs}) {
+//TYPES
+type Props = { total: number, docs: number }
+//MAIN FC
+export default function Pagination({total, docs}:Props) {
     //HOOKS
     const router = useRouter();
     //PARAMS AND VARIABLES
     const page = useSearchParams();
-    const current = page.get('page') || 1;
+    const current = Number(page.get('page')) || 1;
     const search = page.get('search') || '';
     const author = page.get('author') || 'all';
     //RETORN URL PATH
@@ -18,12 +20,12 @@ export default function Pagination({total, docs}) {
     }
     function prev() {
         if(current <= 1) return;
-        router.push(urlPath(parseInt(current)-1));
+        router.push(urlPath(current - 1));
     }
     function next() {
         const totalPages = Math.ceil(total / docs);
         if(current >= totalPages) return;
-        router.push(urlPath(parseInt(current)+1));
+        router.push(urlPath(current + 1));
     }
   return (
     <div className="flex mb-5 flex-wrap px-2 justify-center items-center">

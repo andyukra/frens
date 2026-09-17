@@ -3,6 +3,13 @@
 import { useEffect } from "react";
 import Script from "next/script";
 
+declare global {
+  interface Window {
+    OneSignalDeferred?: Array<(OneSignal: any) => Promise<void> | void>;
+    OneSignal?: any;
+  }
+}
+
 export default function OneSignalInit() {
   useEffect(() => {
     window.OneSignalDeferred = window.OneSignalDeferred || [];

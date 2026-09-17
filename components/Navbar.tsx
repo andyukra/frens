@@ -41,7 +41,7 @@ export default function Navbar() {
       className="h-[64px] z-[100] flex items-center md:px-10 px-4 justify-between backdrop-blur-md shadow-md"
     >     
       <Link href="/home?page=1" className={`${lobster.className} flex items-center gap-4`}>
-        <h1 className="text-2xl font-bold text-black">frens</h1>
+        <h1 className="text-2xl font-bold text-white text-shadow">frens</h1>
       </Link>
       {pathname === "/home" && <Searcher />}
       {status === 'authenticated' ? (
@@ -50,7 +50,7 @@ export default function Navbar() {
             {!avatar ? <FaUser /> : (
               <img
                 onClick={() => setDropdown(!dropdown)}
-                className="rounded-full cursor-pointer shadow w-12 h-12 ring-1 ring-slate-950"
+                className="rounded-full cursor-pointer shadow w-11 h-11 ring-4 ring-white"
                 src={avatar}
                 alt="avatar"
               />
@@ -89,16 +89,6 @@ export default function Navbar() {
                   >
                     <p className="text-black font-bold text-lg">Log out</p>
                     <FaPowerOff color="black" size={20} />
-                  </li>
-                  <li
-                    onClick={() => {
-                      router.push(`/home?author=${session.user.name}`);
-                      setDropdown(false);
-                    }}
-                    className="flex justify-between items-center rounded bg-slate-100 px-4 py-2 cursor-pointer hover:bg-slate-300"
-                  >
-                    <p className="text-black font-bold text-lg">Mi perfil</p>
-                    <FaUser color="black" size={20} />
                   </li>
                 </ul>
               </div>

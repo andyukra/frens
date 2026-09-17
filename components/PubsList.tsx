@@ -2,8 +2,17 @@ import { getUncacheableData, getCacheableData } from "@/lib/dbConsults";
 //COMPONENTS
 import Pub from "@/components/Pub";
 import Pagination from "@/components/Pagination";
-
-export default async function PubsList({ searchParams, docsPerPage  }) {
+//TYPES IMPORT
+import type { Publication } from '@/lib/types/publication';
+//TYPES
+type SearchParams = {
+  page: number,
+  author: string,
+  search: string
+}
+type Props = { searchParams: SearchParams, docsPerPage: number }
+//MAIN FC
+export default async function PubsList({ searchParams, docsPerPage  }:Props) {
   //RESOLVE PARAMS PROMISE
   const params = await searchParams;
   //EXTRACT AND SANITYZE DATA FROM PARAMS
@@ -29,7 +38,7 @@ export default async function PubsList({ searchParams, docsPerPage  }) {
             </h1>
         )}
 		<div className="lg:columns-4 md:columns-2 break-inside-avoid">
-		{pubs.map((elem, key) => {
+		{pubs.map((elem:Publication, key:number) => {
 			return <Pub info={elem} key={key} />;
 		})}
 		</div>

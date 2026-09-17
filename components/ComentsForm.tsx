@@ -103,7 +103,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
               maxLength={500}
               minLength={1}
               required
-              className={`bg-slate-300 w-full py-2 px-4 rounded-lg focus:outline-none text-slate-950 ${commentTxt.length > 500 && "ring-2 ring-red-600 bg-red-200"}`}
+              className={`bg-white w-full py-2 px-4 rounded-lg focus:outline-none text-black ${commentTxt.length > 500 && "ring-2 ring-red-600 bg-red-200"}`}
               value={commentTxt}
               onChange={(e) => setCommentTxt(e.target.value)}
             />
@@ -116,16 +116,16 @@ export default function ComentsForm({ pubId, cb }: Props) {
               onChange={(e) => upComment(e, "IMG")}
             />
             <label htmlFor={pubId} className="">
-              <FaImage className="text-gray-600 cursor-pointer size-5" />
+              <FaImage className="text-white cursor-pointer size-5" />
             </label>
           </div>
           {loaderComment ? (
-            <FaSpinner className="animate-spin text-gray-600" size={20} />
+            <FaSpinner className="animate-spin text-white" size={20} />
           ) : (
             <button disabled={!token}>
               <FaPaperPlane
                 size={20}
-                className="cursor-pointer hover:animate-pulse text-gray-600"
+                className="cursor-pointer hover:animate-pulse text-white"
               />
             </button>
           )}
