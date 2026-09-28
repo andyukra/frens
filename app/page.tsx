@@ -11,8 +11,9 @@ export default async function Index() {
     return(
         <main>
             <section className='text-white lg:grid lg:grid-cols-2 px-10 pb-[64px] gap-5 items-center h-[calc(100dvh-64px)] flex justify-center'>
-                <div className="txt">
-                    <h1 className='text-8xl md:text-[10rem]' style={lobster.style}>Frens</h1>
+                <div className="txt flex flex-col gap-5">
+                    <h1 
+                        className='text-8xl md:text-[10rem]' style={lobster.style}>Frens</h1>
                     <p
                         //@ts-ignore
                         style={{cornerShape: 'squircle', borderRadius: '1rem'}}

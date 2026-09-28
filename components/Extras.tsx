@@ -5,7 +5,6 @@ import type { Publication } from '@/lib/types/publication';
 
 export default async function Extras() {
   const extras:Publication[] = await getExtras(10);
-  console.log(extras)
   return (
     <>
       <h2 className="text-2xl font-bold text-center tracking-widest p-5 bg-black w-full rounded-lg shadow-md">
