@@ -172,7 +172,7 @@ export async function UpComment(form: FormData): Promise<ResponseComment> {
     //REVALIDATE CACHE
     updateTag("pubsPage-1");
 
-    return { message: "OK" };
+    return { message: comment };
   }
   //FOR FILES
   if (file) {

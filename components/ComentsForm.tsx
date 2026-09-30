@@ -68,70 +68,66 @@ export default function ComentsForm({ pubId, cb }: Props) {
     }
     const res = await UpComment(form);
     setCommentTxt("");
-    if (
-      !res ||
-      res.hasOwnProperty("err") ||
-      !res.hasOwnProperty("msg") ||
-      !res.hasOwnProperty("comment")
-    ) {
+    if (!res.message) {
       toaster("El comentario no se pudo publicar");
-      throw "error";
+      setLoaderComment(false);
+      return;
     }
     setLoaderComment(false);
     toaster("El comentario se publicó exitosamente");
-    cb(res.comment as string);
+    cb(res.message);
   }
 
   return (
     <>
       {status == "authenticated" && (
         <>
-        <Turnstile
-          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-          onSuccess={setToken}
-          onError={() => console.error("Error en Turnstile")}
-          onExpire={() => setToken(null)}
-        />
-        <form
-          onSubmit={(e) => upComment(e, "TEXT")}
-          className="w-full flex gap-4 items-center pt-2"
-        >
-          {toastMsg && <Toast msg={toastMsg} />}
-          <div className="commentBX w-full flex justify-between items-center gap-3">
-            <input
-              type="text"
-              placeholder="Escribe un comentario"
-              maxLength={500}
-              minLength={1}
-              required
-              className={`bg-white w-full py-2 px-4 rounded-lg focus:outline-none text-black ${commentTxt.length > 500 && "ring-2 ring-red-600 bg-red-200"}`}
-              value={commentTxt}
-              disabled={!token}
-              onChange={(e) => setCommentTxt(e.target.value)}
-            />
-            <input
-              disabled={!token}
-              type="file"
-              id={pubId}
-              hidden
-              accept="image/*"
-              onChange={(e) => upComment(e, "IMG")}
-            />
-            <label htmlFor={pubId} className="">
-              <FaImage className="text-white cursor-pointer size-5" />
-            </label>
-          </div>
-          {loaderComment ? (
-            <FaSpinner className="animate-spin text-white" size={20} />
-          ) : (
-            <button disabled={!token}>
-              <FaPaperPlane
-                size={20}
-                className="cursor-pointer hover:animate-pulse text-white"
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+            onSuccess={setToken}
+            onError={() => console.error("Error en Turnstile")}
+            onExpire={() => setToken(null)}
+          />
+          <form
+            onSubmit={(e) => upComment(e, "TEXT")}
+            className="w-full flex gap-4 items-center pt-2"
+          >
+            {toastMsg && <Toast msg={toastMsg} />}
+            <div className="commentBX w-full flex justify-between items-center gap-3">
+              <input
+                type="text"
+                placeholder="Escribe un comentario"
+                maxLength={500}
+                minLength={1}
+                required
+                className={`bg-white w-full py-2 px-4 rounded-lg focus:outline-none text-black ${commentTxt.length > 500 && "ring-2 ring-red-600 bg-red-200"}`}
+                value={commentTxt}
+                disabled={!token}
+                onChange={(e) => setCommentTxt(e.target.value)}
               />
-            </button>
-          )}
-        </form>
+              <input
+                disabled={!token}
+                type="file"
+                id={pubId}
+                hidden
+                accept="image/*"
+                onChange={(e) => upComment(e, "IMG")}
+              />
+              <label htmlFor={pubId} className="">
+                <FaImage className="text-white cursor-pointer size-5" />
+              </label>
+            </div>
+            {loaderComment ? (
+              <FaSpinner className="animate-spin text-white" size={20} />
+            ) : (
+              <button disabled={!token}>
+                <FaPaperPlane
+                  size={20}
+                  className="cursor-pointer hover:animate-pulse text-white"
+                />
+              </button>
+            )}
+          </form>
         </>
       )}
     </>
