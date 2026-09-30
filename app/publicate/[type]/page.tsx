@@ -15,8 +15,6 @@ export default async function Publicate({ params }) {
   return (
     <main className="md:px-10 px-5 py-5 h-[calc(100dvh-64px-1.25rem)] text-black">
       <section className="h-full flex justify-center items-center flex-col gap-5">
-        <h1 className="text-3xl font-bold">Publicar</h1>
-
         <PublicateForm type={type} />
       </section>
     </main>

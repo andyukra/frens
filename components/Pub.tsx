@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useImageViewer } from '@/lib/stores/dialogs';
 import { Nunito } from "next/font/google";
+import { Delete } from '@/app/actions/serverActions';
 //COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
 import { like } from "@/app/actions/serverActions";
@@ -49,10 +50,11 @@ export default function Pub({ info }:Props) {
 
   const { setData: setImageData } = useImageViewer();
 
-  async function deletePub(info:Publication) {
+  async function deletePub() {
     if (info.author !== session?.user?.name) return;
     if (!confirm("Seguro que desea eliminar esto?")) return;
     setDelLoader(true);
+    const form = new FormData();
     const type = info.image
       ? "image"
       : info.yt
@@ -60,18 +62,21 @@ export default function Pub({ info }:Props) {
         : info.audio
           ? "audio"
           : "text";
-    let url = `/api/publicate?type=${type}&id=${info._id}`;
-    if (type == "image") url += `&src=${info.image.match(/.{24}$/)[0]}`;
-    if (type == "audio") url += `&src=${info.audio.match(/.{24}$/)[0]}`;
-    const res = await fetch(url, {
-      method: "DELETE",
-    });
+    form.append("type", type);
+    form.append("id", info._id);
+    if (type == "image" || type == "audio") {
+      const code = info.image.match(/.{24}$/)[0];
+      form.append("src", code);
+    }
+    const res = await Delete(form);
     //CLOSE MENU
     setOpts(false);
     setDelLoader(false);
-    if (!res.ok) throw res;
-    const response = await res.json();
-    if (response.msg == "OK") router.refresh();
+    if (res.message == "OK") {
+      router.refresh();
+    } else {
+      alert("No se pudo eliminar el post");
+    }
   }
   function detectImg(txt:string) {
     if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
@@ -112,7 +117,7 @@ export default function Pub({ info }:Props) {
               </li>
               {info.author === session?.user?.name && (
                 <li
-                  onClick={() => deletePub(info)}
+                  onClick={() => deletePub()}
                   className="cursor-pointer hover:bg-red-200 rounded w-full flex justify-between p-3"
                 >
                   <p className="font-bold text-md text-red-500">Eliminar</p>
