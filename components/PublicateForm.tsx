@@ -2,8 +2,9 @@
 
 import { FaImage, FaSpinner, FaHeadphones, FaYoutube } from "react-icons/fa6";
 import { useState, useActionState, ChangeEvent, useEffect } from "react";
-import { publicate, ResponsePub } from '@/app/actions/serverActions';
+import { publicate } from '@/app/actions/serverActions';
 import { useRouter } from "next/navigation";
+import { ResponsePub } from '@/lib/types/response';
 //TYPES
 type PubType = "image" | "video" | "audio" | "text";
 type Props = { type: PubType }
