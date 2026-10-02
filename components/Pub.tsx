@@ -94,7 +94,7 @@ export default function Pub({ info }:Props) {
     <article
       //@ts-ignore
       style={{ cornerShape: "squircle", borderRadius: "1rem" }}
-      className={`my-4 inline-block w-full bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100`}
+      className={`my-2 inline-block w-full bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100`}
     >
       <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[2px] border-solid border-yellow-100">
         <CardHeader pub={info} pubDate={moment(info.date).fromNow()} />

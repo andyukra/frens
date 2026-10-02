@@ -1,12 +1,10 @@
 "use client";
 import { FaPaperPlane, FaSpinner, FaImage } from "react-icons/fa6";
-import { useState } from "react";
+import { useState, useActionState, useEffect, useRef, ChangeEvent } from "react";
 import { useSession } from "next-auth/react";
-import React from "react";
 import { Turnstile } from "nextjs-turnstile";
-import { UpComment } from "@/app/actions/serverActions";
-//COMPONENTS
-import Toast from "@/components/Toast";
+import { upComment } from "@/app/actions/serverActions";
+import { ResponseComment } from '@/lib/types/response';
 
 //TYPES
 type Props = {
@@ -14,121 +12,93 @@ type Props = {
   cb: (txt: string) => void;
 };
 type TypeComment = "TEXT" | "IMG";
+//INIT
+let initState: ResponseComment = {};
 //MAIN FC
 export default function ComentsForm({ pubId, cb }: Props) {
   //HOOKS
   const { status } = useSession();
-  const [commentTxt, setCommentTxt] = useState("");
-  const [loaderComment, setLoaderComment] = useState(false);
-  const [toastMsg, setToastMsg] = useState("");
   const [token, setToken] = useState<string | null>(null);
-
-  function toaster(msg: string) {
-    setToastMsg(msg);
-    setTimeout(() => setToastMsg(""), 3000);
-  }
-
-  async function upComment(e: React.SyntheticEvent, type: TypeComment) {
-    e.preventDefault();
-    if (!token) {
-      alert("Por favor completa el CAPTCHA");
+  const [state, formAction, isPending] = useActionState(upComment, initState);
+  const onMount = useRef(true);
+  const formRef = useRef(null);
+  //COMPONENT ON MOUNT
+  useEffect(() => {
+    if(onMount.current === true) {
+      onMount.current = false;
       return;
     }
-    if (status == "unauthenticated") return;
-    if (loaderComment) return;
-    setLoaderComment(true);
-    const form = new FormData();
-    form.append("id", pubId);
-    form.append("token", token);
-    switch (type) {
-      case "TEXT":
-        if (!commentTxt) return;
-        if (commentTxt.length > 500) {
-          alert("El texto es muy largo");
-          return;
-        }
-        form.append("comment", commentTxt.trim());
-        break;
-      case "IMG":
-        //@ts-ignore
-        const file = e.target.files[0];
-        if (!file || file.length == 0) return;
-        if (!/^image/.test(file.type)) {
-          alert("Suba una imágen porfavor");
-          return;
-        }
-        if (file.size > 4000000) {
-          alert("El archivo es muy grande, max 4MB");
-          return;
-        }
-        form.append("file", file);
-        break;
-      default:
-        return;
+    if(state?.message) {
+      cb(state.message);
     }
-    const res = await UpComment(form);
-    setCommentTxt("");
-    if (!res.message) {
-      toaster("El comentario no se pudo publicar");
-      setLoaderComment(false);
-      return;
+  }, [state]);
+  //HANDLERS
+  function handleOnChangeImage(e: ChangeEvent<HTMLInputElement>) {
+    if(!token) return;
+    if(isPending) return;
+    if (e.target.files && e.target.files.length > 0) {
+      formRef.current.requestSubmit();
     }
-    setLoaderComment(false);
-    toaster("El comentario se publicó exitosamente");
-    cb(res.message);
   }
-
+  //RENDER
   return (
     <>
       {status == "authenticated" && (
-        <>
-          <Turnstile
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-            onSuccess={setToken}
-            onError={() => console.error("Error en Turnstile")}
-            onExpire={() => setToken(null)}
-          />
-          <form
-            onSubmit={(e) => upComment(e, "TEXT")}
-            className="w-full flex gap-4 items-center pt-2"
-          >
-            {toastMsg && <Toast msg={toastMsg} />}
-            <div className="commentBX w-full flex justify-between items-center gap-3">
-              <input
-                type="text"
-                placeholder="Escribe un comentario"
-                maxLength={500}
-                minLength={1}
-                required
-                className={`bg-white w-full py-2 px-4 rounded-lg focus:outline-none text-black ${commentTxt.length > 500 && "ring-2 ring-red-600 bg-red-200"}`}
-                value={commentTxt}
-                disabled={!token}
-                onChange={(e) => setCommentTxt(e.target.value)}
-              />
-              <input
-                disabled={!token}
-                type="file"
-                id={pubId}
-                hidden
-                accept="image/*"
-                onChange={(e) => upComment(e, "IMG")}
-              />
-              <label htmlFor={pubId} className="">
-                <FaImage className="text-white cursor-pointer size-5" />
-              </label>
-            </div>
-            {loaderComment ? (
-              <FaSpinner className="animate-spin text-white" size={20} />
-            ) : (
-              <button disabled={!token}>
-                <FaPaperPlane
-                  size={20}
-                  className="cursor-pointer hover:animate-pulse text-white"
+        <form
+          ref={formRef}
+          action={formAction}
+          className="w-full flex gap-4 items-center pt-2"
+        >
+          {!token ? (
+            <Turnstile
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+              onSuccess={setToken}
+              onError={() => console.error("Error en Turnstile")}
+              onExpire={() => setToken(null)}
+            />
+          ) : (
+            <>
+              {token && <input type="text" defaultValue={token} hidden name="token" />}
+              <input type="text" defaultValue={pubId} hidden name="id" />
+              <div className="commentBX w-full flex justify-between items-center gap-3">
+                <input
+                  type="text"
+                  placeholder="Escribe un comentario"
+                  name="comment"
+                  maxLength={500}
+                  minLength={1}
+                  className={`bg-white w-full py-2 px-4 rounded-lg focus:outline-none text-black`}
+                  disabled={!token}
                 />
-              </button>
-            )}
-          </form>
-        </>
+                <input
+                  disabled={!token}
+                  type="file"
+                  name="image"
+                  id={pubId}
+                  hidden
+                  accept="image/*"
+                  onChange={handleOnChangeImage}
+                />
+              </div>
+
+              {isPending ? (
+                <FaSpinner className="animate-spin text-white" size={20} />
+              ) : (
+                <>
+                <label htmlFor={pubId} className="">
+                  <FaImage className="text-white cursor-pointer size-5" />
+                </label>
+                <button disabled={!token}>
+                  <FaPaperPlane
+                    size={20}
+                    className="cursor-pointer hover:animate-pulse text-white"
+                  />
+                </button>
+                </>
+              )}
+            </>
+          )}
+        </form>
       )}
     </>
   );

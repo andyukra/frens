@@ -19,7 +19,7 @@ export default function Searcher() {
       className="relative flex items-center justify-center"
     >
       <input
-        className="md:py-2 px-4 py-1 rounded-full md:w-[35vw] w-[50vw] bg-black placeholder-white border-2 border-solid border-white focus:outline-none"
+        className="text-black placeholder:text-black px-4 py-1 rounded-full md:w-[35vw] w-[50vw] bg-yellow-100 placeholder-white border-4 border-solid border-yellow-400 focus:outline-none"
         type="search"
         placeholder="Buscar..."
         minLength={3}
@@ -31,7 +31,7 @@ export default function Searcher() {
       />
       <button className="absolute right-5 cursor-pointer">
         <FaSearch
-          color="#fff"
+          color="#000"
           size={15}
         />
       </button>

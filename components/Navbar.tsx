@@ -38,7 +38,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="h-[64px] z-[100] flex items-center md:px-10 px-4 justify-between backdrop-blur-md shadow-md"
+      className="h-[64px] z-[100] flex items-center md:px-10 px-4 justify-between bg-black shadow-md"
     >     
       <Link href="/home?page=1" className={`${lobster.className} flex items-center gap-4`}>
         <h1 className="text-2xl font-bold text-white text-shadow">frens</h1>
