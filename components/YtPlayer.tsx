@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import { FaYoutube } from "react-icons/fa6";
 //TYPES
 type Props = { link: string }
@@ -20,7 +19,7 @@ export default function YtPlayer({ link }:Props) {
         ></iframe>
       ) : (
         <div className="relative flex justify-center items-center">
-          <Image
+          <img
             src={`https://i.ytimg.com/vi/${link}/sd1.jpg`}
             width={640}
             height={480}

@@ -2,7 +2,7 @@ import { updateTag } from "next/cache";
 import { auth } from "@/auth";
 import { v2 as cloudinary } from "cloudinary";
 import blockeds from "@/lib/blocked";
-import { filterFileSizeAndType, getVideoId } from "@/lib/helpers/allHelpers";
+import { getVideoId, verifyToken } from "@/lib/helpers/allHelpers";
 import { webPushNotif } from './webPushService';
 //DB AND MODELS
 import { Types } from "mongoose";
@@ -14,16 +14,11 @@ import {
   ResponseComment,
   ResponseDelete,
   ResponsePub,
+  ResponseSignature
 } from "@/lib/types/response";
 //********************** I N I T ****************************
 const PubModel = Pubs as any;
 const UserModel = Users as any;
-//CLOUDYNARI CREDENTIALS
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
 //SERVICES
 export default {
   async like(id: string) {
@@ -60,31 +55,20 @@ export default {
   ): Promise<ResponseComment> {
     //@ts-ignore
     const { user } = await auth();
-    if (!user) return { errors: "UNAUTHORIZED" };
-    if (blockeds.includes(user.email)) return { errors: "UNAUTHORIZED" };
+    if (!user) return { errors: "Sin autorización" };
+    if (blockeds.includes(user.email)) return { errors: "Sin autorización" };
     //VERIFY CLOUDFLARE TOKEN
-    const token = form.get("token");
-    if (!token || typeof token !== "string") return { errors: "UNAUTHORIZED" };
-    const result = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `secret=${process.env.TURNSTILE_SECRET_KEY}&response=${token}`,
-      },
-    );
-    const data = await result.json();
-    if (!data.success) return { errors: "UNAUTHORIZED" };
+    const token = form.get("token") as string ?? "";
+    const turnstileStatus = await verifyToken(token);
+    if(!turnstileStatus) return { errors: "Sin autorización" };
     //EXTRACT DATA FROM FORMDATA
-    const image = form.get("image") as File;
-    const rawComment = form.get("comment");
-    const rawId = form.get("id");
-    const comment = typeof rawComment === "string" ? rawComment.trim() : "";
-    const id = typeof rawId === "string" ? rawId : null;
+    const image = form.get("image") as string ?? "";
+    const comment = form.get("comment") as string ?? "";
+    const id = form.get("id") as string ?? "";
     //VERIFY DATA INTEGRITY
-    if (!id) return { errors: "BADID" };
-    if (!image && !comment) return { errors: "EMPTY" };
-    if (comment && comment.length > 500) return { errors: "LARGECOMMENT" };
+    if (!id) return { errors: "El id esta mal" };
+    if (!image && !comment) return { errors: "Debes enviar al menos un texto o una imagen" };
+    if (comment && comment.length > 500) return { errors: "El comentario no puede tener mas de 500 caractéres." };
     //FOR TEXT COMMENTS
     if (comment) {
       await db();
@@ -116,26 +100,14 @@ export default {
     }
     //FOR FILES
     if (image) {
-      if (!filterFileSizeAndType(image, "image")) return;
-      const binary = await image.arrayBuffer();
-      const buffer = Buffer.from(binary);
-
-      const url: string = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({}, (err, res) => {
-            if (err) return reject(err);
-            if (res) return resolve(res.secure_url);
-          })
-          .end(buffer);
-      });
-
       await db();
+      //GET AUTHOR'S AVATAR
       const userProfile = (await UserModel.findOne(
         { email: user.email },
         { image: 1, _id: 0 },
       ).lean()) as { image?: string | null } | null;
 
-      const imgDB = userProfile?.image ?? null;
+      const imgDB: string = userProfile?.image ?? "";
 
       await PubModel.updateOne(
         { _id: id },
@@ -144,7 +116,7 @@ export default {
             comments: {
               author: user.name,
               avatar: imgDB,
-              msg: url,
+              msg: image,
             },
           },
         },
@@ -153,7 +125,7 @@ export default {
       //REVALIDATE CACHE
       updateTag("pubsPage-1");
 
-      return { message: url };
+      return { message: image };
     }
   },
   async publicate(
@@ -180,12 +152,13 @@ export default {
     );
     //INIT
     const type = form.get("type") as string;
-    const title = (form.get("title") as string) || "";
-    const description = (form.get("description") as string) || "";
-    const image = (form.get("image") as File) || null;
-    const audio = (form.get("audio") as File) || null;
-    const yt = (form.get("yt") as string) || null;
+    const title = form.get("title") as string;
+    const description = (form.get("description") as string) ?? "";
+    const image = (form.get("image") as string) ?? "";
+    const audio = (form.get("audio") as string) ?? "";
+    const yt = (form.get("yt") as string) ?? "";
     //TITLE MANDATORY
+    if(!type) return { errors: { server: "NOTYPE" } };
     if (!title || title.length > 50) return { errors: { server: "NOTITLE" } };
     //SWITCH TYPE
     switch (type) {
@@ -210,31 +183,16 @@ export default {
         //IMG FILTER
         if (description && description.length > 500)
           return { errors: { server: "LARGEDESCRIPTION" } };
-        if (!filterFileSizeAndType(image, "image"))
-          return { errors: { server: "BADFILE" } };
-        //START PROCESS
-        const binary = await image.arrayBuffer();
-        const buffer = Buffer.from(binary);
-
-        const url: string = await new Promise((resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream({}, (err, res) => {
-              if (err) return reject(err);
-              if (res) return resolve(res.secure_url);
-            })
-            .end(buffer);
-        });
-
         //SAVE PUB TO DB
         await PubModel.create({
           author: user.name,
           avatar: imgDB,
           title: title.trim(),
           description: description.trim(),
-          image: url,
+          image: image,
         });
         //SEND WEB PUSH NOTIFICATION
-        await webPushNotif(title.trim(), url, description.trim());
+        await webPushNotif(title.trim(), image, description.trim());
 
         //REVALIDATE CACHE
         updateTag("pubsPage-1");
@@ -264,29 +222,13 @@ export default {
       case "audio": {
         if (description && description.length > 500)
           return { errors: { server: "LARGEDESCRIPTION" } };
-        //FILTER AUDIO FILE
-        if (!filterFileSizeAndType(audio, "audio"))
-          return { errors: { server: "BADFILE" } };
-        //START PROCESS
-        const binary = await audio.arrayBuffer();
-        const buffer = Buffer.from(binary);
-
-        const url: string = await new Promise((resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream({ resource_type: "auto" }, (err, res) => {
-              if (err) return reject(err);
-              if (res) return resolve(res.secure_url);
-            })
-            .end(buffer);
-        });
-
         //SAVE PUB TO DB
         await PubModel.create({
           author: user.name,
           avatar: imgDB,
           title: title.trim(),
           description: description.trim(),
-          audio: url,
+          audio: audio,
         });
         //WEBPUSH NOTIFICATION
         await webPushNotif(title.trim(), "", description.trim());
@@ -332,4 +274,24 @@ export default {
 
     return { message: "OK" };
   },
+  async getSignature(timestamp: number): Promise<ResponseSignature> {
+    //GET SESSION
+    const { user } = await auth();
+    if (!user) return { errors: "UNAUTHORIZED" };
+    if (blockeds.includes(user.email))
+      return { errors: "UNAUTHORIZED" };
+    //CHECK PUBCOUNTPERDAY
+    await db();
+    const { pubcountperday } = await UserModel.findOne(
+      { email: user.email },
+      { _id: 0, pubcountperday: 1 },
+    ).lean();
+    //CHECK PUBS PER DAY LIMIT
+    if (pubcountperday <= 0) return { errors: "MAXLIMITPERDAY" };
+    const signature = cloudinary.utils.api_sign_request(
+      { timestamp },
+      process.env.CLOUDINARY_SECRET
+    );
+    return { signature };
+  }
 };

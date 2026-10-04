@@ -15,3 +15,6 @@ export async function publicate(prevState: ResponsePub, form: FormData) {
 export async function Delete(form: FormData) {
   return services.Delete(form);
 }
+export async function getSignature(timestamp: number) {
+  return services.getSignature(timestamp);
+}

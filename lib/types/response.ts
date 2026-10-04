@@ -17,3 +17,7 @@ export type ResponseDelete = {
   errors?: string;
   message?: string;
 };
+export type ResponseSignature = {
+  errors?: string;
+  signature?: string;
+};

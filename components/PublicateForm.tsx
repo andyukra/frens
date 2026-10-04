@@ -132,7 +132,7 @@ export default function PublicateForm({ type }:Props) {
         disabled={!!clientError}
         //@ts-ignore
         style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
-        className={`text-white px-4 py-2 font-bold w-full flex justify-center bg-black`}
+        className={`text-white px-4 py-2 font-bold w-full flex justify-center ring-2 ring-yellow-200 hover:bg-green-800 transition`}
       >
         {isPending ? (
           <FaSpinner className="animate-spin" color={"white"} size={35} />
