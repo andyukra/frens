@@ -17,9 +17,9 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { useImageViewer } from '@/lib/stores/dialogs';
+import { useImageViewer } from "@/lib/stores/dialogs";
 import { Nunito } from "next/font/google";
-import { Delete } from '@/app/actions/serverActions';
+import { Delete } from "@/app/actions/serverActions";
 //COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
 import { like } from "@/app/actions/serverActions";
@@ -27,7 +27,7 @@ import Clipboard from "@/components/Clipboard";
 import CardHeader from "@/components/CardHeader";
 import BasicSkeleton from "@/components/BasicSkeleton";
 //TYPES IMPORT
-import type { Publication } from '@/lib/types/publication';
+import type { Publication } from "@/lib/types/publication";
 //GLOBAL VARS
 moment.locale("es");
 const ComentariesBox = dynamic(() => import("@/components/ComentariesBox"), {
@@ -36,9 +36,9 @@ const ComentariesBox = dynamic(() => import("@/components/ComentariesBox"), {
 const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
 
 //TYPES
-type Props = { info: Publication }
+type Props = { info: Publication };
 //MAIN FC
-export default function Pub({ info }:Props) {
+export default function Pub({ info }: Props) {
   //HOOKS
   const { data: session } = useSession();
   const router = useRouter();
@@ -64,8 +64,11 @@ export default function Pub({ info }:Props) {
           : "text";
     form.append("type", type);
     form.append("id", info._id);
-    if (type == "image" || type == "audio") {
+    if (type == "image") {
       const code = info.image.match(/.{24}$/)[0];
+      form.append("src", code);
+    } else if (type == "audio") {
+      const code = info.audio.match(/.{24}$/)[0];
       form.append("src", code);
     }
     const res = await Delete(form);
@@ -78,16 +81,21 @@ export default function Pub({ info }:Props) {
       alert("No se pudo eliminar el post");
     }
   }
-  function detectImg(txt:string) {
+  function detectImg(txt: string) {
     if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
       return <p className="mt-2 rounded-lg font-bold text-white">{txt}</p>;
     } else {
-      return <div className="w-full">
-        <img alt="imagen linda" src={txt} className="mt-4 w-full h-auto max-h-[500px]" 
-          //@ts-ignore
-          style={{cornerShape: "squircle", borderRadius: "1rem"}}
-        />
-      </div>;
+      return (
+        <div className="w-full">
+          <img
+            alt="imagen linda"
+            src={txt}
+            className="mt-4 w-full h-auto max-h-[500px]"
+            //@ts-ignore
+            style={{ cornerShape: "squircle", borderRadius: "1rem" }}
+          />
+        </div>
+      );
     }
   }
   return (
@@ -148,7 +156,7 @@ export default function Pub({ info }:Props) {
         <div id="contentTxt" className="py-4 px-4">
           <h2
             //@ts-ignore
-            style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
+            style={{ cornerShape: "squircle", borderRadius: "0.5rem" }}
             className={`${nunito.className} font-[900] text-yellow-300 text-xl p-2 bg-[#000] ring-2 ring-yellow-300`}
           >
             {info.title}
@@ -157,7 +165,10 @@ export default function Pub({ info }:Props) {
         </div>
         {info?.image && (
           <div className="w-full flex">
-            <button className="w-full" onClick={() => setImageData(info.image, info.title)}>
+            <button
+              className="w-full"
+              onClick={() => setImageData(info.image, info.title)}
+            >
               <img
                 alt="imagen linda"
                 src={info.image}

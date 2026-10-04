@@ -9,6 +9,7 @@ import ComentariesBox from "@/components/ComentariesBox";
 import YtPlayer from "@/components/YtPlayer";
 import CardHeader from "@/components/CardHeader";
 import BackButton from "@/components/BackButton";
+import BasicSkeleton from '@/components/BasicSkeleton';
 //TYPES
 import type { Publication } from '@/lib/types/publication';
 //GLOBAL VARS
@@ -28,7 +29,7 @@ function Empty() {
 }
 export default function Pub({ params }) {
   return (
-    <Suspense fallback={<h1>Cargando publicación...</h1>}>
+    <Suspense fallback={<BasicSkeleton/>}>
       <Publication params={params} />
     </Suspense>
   );

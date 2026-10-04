@@ -19,6 +19,12 @@ import {
 //********************** I N I T ****************************
 const PubModel = Pubs as any;
 const UserModel = Users as any;
+//CLOUDYNARI CREDENTIALS
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
+  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 //SERVICES
 export default {
   async like(id: string) {
@@ -192,7 +198,7 @@ export default {
           image: image,
         });
         //SEND WEB PUSH NOTIFICATION
-        await webPushNotif(title.trim(), image, description.trim());
+        // await webPushNotif(title.trim(), image, description.trim());
 
         //REVALIDATE CACHE
         updateTag("pubsPage-1");
