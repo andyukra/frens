@@ -13,6 +13,7 @@ import { Turnstile } from "nextjs-turnstile";
 import { upComment } from "@/app/actions/serverActions";
 import { upToCloudinary } from '@/lib/helpers/allHelpers';
 import { ResponseComment } from "@/lib/types/response";
+import { toast } from 'react-toastify';
 
 //TYPES
 type Props = {
@@ -41,6 +42,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
     }
     if (state?.message) {
       cb(state.message);
+      toast.success("Comentario publicado!");
     }
   }, [state]);
   //HANDLERS

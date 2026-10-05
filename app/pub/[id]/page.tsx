@@ -57,7 +57,7 @@ async function Publication({ params }) {
           <article 
             //@ts-ignore
             style={{cornerShape: 'squircle', borderRadius: '2rem'}}
-            className="overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-white"
+            className="overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100"
           >
 
             {/* HEADER */}
@@ -89,7 +89,7 @@ async function Publication({ params }) {
                     style={{cornerShape: 'squircle', borderRadius: '1rem'}}
                     src={pub.image}
                     alt={pub.title}
-                    className="max-h-[650px] w-auto mx-auto object-contain ring-2 ring-white"
+                    className="max-h-[650px] w-auto mx-auto object-contain ring-2 ring-yellow-100"
                   />
                 </div>
               )}
@@ -114,7 +114,7 @@ async function Publication({ params }) {
 
             {/* DESCRIPTION */}
             {pub.description && (
-              <div className="border-t-2 border-white px-5 py-5">
+              <div className="border-t-2 border-yellow-100 px-5 py-5">
                 <p className="whitespace-pre-wrap leading-7 text-white">
                   {pub.description}
                 </p>
@@ -129,11 +129,11 @@ async function Publication({ params }) {
           <article 
             //@ts-ignore
             style={{cornerShape: 'squircle', borderRadius: '1.5rem'}}
-            className="flex max-h-[calc(100dvh-2rem)] min-h-[500px] flex-col overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-white"
+            className="flex max-h-[calc(100dvh-2rem)] min-h-[500px] flex-col overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100"
           >
 
-            <header className="border-b-2 border-white p-5">
-              <h2 className="text-xl font-bold text-white">
+            <header className="border-b-2 border-yellow-100 p-5">
+              <h2 className="text-xl font-bold text-yellow-100">
                 Comentarios
               </h2>
             </header>

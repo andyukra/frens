@@ -30,9 +30,12 @@ export default async function PubsList({ searchParams, docsPerPage  }:Props) {
   return (
 	<div>
 		{search && (
-            <h1 className="text-center text-black text-xl lg:text-2xl font-bold">
+            <h1
+              //@ts-ignore
+              style={{cornerShape: 'squircle', borderRadius: '0.8rem'}}
+              className="text-center text-white text-xl lg:text-2xl font-bold p-2 bg-[#0058] backdrop-blur-sm ring-1 ring-blue-100 my-2">
               {count} resultados encontrados para{" "}
-              <span className="text-2xl lg:text-3xl font-bold text-slate-800">
+              <span className="text-2xl lg:text-3xl font-bold text-blue-500">
                 {search}
               </span>
             </h1>

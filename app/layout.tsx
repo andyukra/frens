@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 //COMPONENTS
 import OneSignalInit from "@/components/OneSignalInit";
 import ImageViewer from "@/components/ImageViewer";
+import { ToastContainer, Bounce } from 'react-toastify';
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "600"] });
 
@@ -18,6 +19,19 @@ export default function RootLayout({ children }) {
       <body style={quicksand.style}>
         <OneSignalInit />
         <Provider>
+          <ToastContainer
+            position="top-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick={true}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+          />
           <ImageViewer />
           {children}
         </Provider>
