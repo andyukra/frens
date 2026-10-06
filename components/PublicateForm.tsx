@@ -57,7 +57,9 @@ export default function PublicateForm({ type }:Props) {
         startTransition(() => formAction(formData));
         //CLEAR FORM FIELDS AND STATE
         setFile(null);
-        formElement.reset();
+      } else {
+        //SUBMIT formAction with FormData
+        startTransition(() => formAction(formData));
       }
     } catch(e) {
       console.log(e)
@@ -162,6 +164,7 @@ export default function PublicateForm({ type }:Props) {
       )}
       <button
         disabled={isLoading}
+        type="submit"
         //@ts-ignore
         style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
         className={`text-white px-4 py-2 font-bold w-full flex justify-center ring-2 ring-yellow-200 hover:bg-green-800 transition`}
