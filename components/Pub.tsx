@@ -34,7 +34,8 @@ const ComentariesBox = dynamic(() => import("@/components/ComentariesBox"), {
   loading: () => <BasicSkeleton />,
 });
 const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
-
+const vip = 'vipPub';
+const normal = 'overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100';
 //TYPES
 type Props = { info: Publication };
 //MAIN FC
@@ -102,7 +103,7 @@ export default function Pub({ info }: Props) {
     <article
       //@ts-ignore
       style={{ cornerShape: "squircle", borderRadius: "1rem" }}
-      className={`my-2 inline-block w-full bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100`}
+      className={`my-2 inline-block w-full ${info.vip ? vip : normal}`}
     >
       <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[2px] border-solid border-yellow-100">
         <CardHeader pub={info} pubDate={moment(info.date).fromNow()} />

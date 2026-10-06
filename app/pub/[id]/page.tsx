@@ -15,6 +15,8 @@ import type { Publication } from '@/lib/types/publication';
 //GLOBAL VARS
 moment.locale("es");
 const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
+const vip = 'vipPub';
+const normal = 'overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100';
 //COMPONENTS
 function Empty() {
   return (
@@ -40,7 +42,6 @@ async function Publication({ params }) {
   if (!id || !/^[a-f\d]{24}$/i.test(id)) return <Empty />;
   const pub:Publication = await getPub(id);
   if (!pub) return <Empty />;
-
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-8">
 
@@ -57,7 +58,7 @@ async function Publication({ params }) {
           <article 
             //@ts-ignore
             style={{cornerShape: 'squircle', borderRadius: '2rem'}}
-            className="overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100"
+            className={`${pub.vip ? vip : normal}`}
           >
 
             {/* HEADER */}

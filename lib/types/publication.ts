@@ -13,5 +13,6 @@ export type Publication = {
   likes: Like[],
   title: string,
   yt: string,
+  vip: boolean,
   _id: string
 }

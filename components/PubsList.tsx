@@ -40,7 +40,7 @@ export default async function PubsList({ searchParams, docsPerPage  }:Props) {
               </span>
             </h1>
         )}
-		<div className="lg:columns-4 md:columns-2 break-inside-avoid">
+		<div className="lg:columns-4 md:columns-2 mt-2 break-inside-avoid">
 		{pubs.map((elem:Publication, key:number) => {
 			return <Pub info={elem} key={key} />;
 		})}

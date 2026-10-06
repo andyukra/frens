@@ -45,6 +45,36 @@ audio::-webkit-media-controls-enclosure {
 .avatarCarrousel {
   animation: avatarsCarrousel 30s linear infinite;
 }
+.vipPub {
+  backdrop-filter: none !important;
+  background: #000 !important;
+  position: relative;
+  box-shadow: none;
+  outline: none;
+}
+.vipPub::before {
+  content: '';
+  z-index: -5;
+  corner-shape: squircle;
+  border-radius: 1rem;
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+  background-size: 400% 400%;
+  animation: vipPubAnimate 2.5s ease infinite;
+}
+.vipPub::after {
+  content: '';
+  z-index: -5;
+  corner-shape: squircle;
+  border-radius: 1rem;
+  position: absolute;
+  inset: -7px;
+  filter: blur(4px);
+  background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+  background-size: 400% 400%;
+  animation: vipPubAnimate 4s ease infinite;
+}
 
 input::placeholder, textarea::placeholder {
   color: #383838;
@@ -81,5 +111,17 @@ body {
   }
   to {
     transform: translateX(-190%);
+  }
+}
+
+@keyframes vipPubAnimate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
