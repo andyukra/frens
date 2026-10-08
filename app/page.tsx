@@ -29,7 +29,7 @@ export default async function Index() {
                 </div>
                 <div className="image hidden lg:block">
                     <img
-                        src="/pic.png"
+                        src="/pic.webp"
                         alt="pic"
                         style={{maskImage: "linear-gradient(black 80%, transparent)"}}
                     />

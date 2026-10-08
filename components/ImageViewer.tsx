@@ -15,8 +15,8 @@ export default function ImageViewer() {
         </button>
         <img
 			//@ts-ignore
-			style={{cornerShape: 'squircle', borderRadius: '1.9rem'}}
-          className="w-auto h-auto max-w-[90dvw] max-h-[90dvh] ring-2 ring-yellow-100 shadow-yellow-200 shadow-xl"
+			style={{cornerShape: 'squircle', borderRadius: '1.2rem'}}
+          className="w-auto h-auto max-w-[90dvw] max-h-[90dvh] ring-2 ring-white"
           src={url}
           alt={alt}
         />
