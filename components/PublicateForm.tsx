@@ -5,7 +5,7 @@ import { useState, useActionState, ChangeEvent, useEffect, useTransition } from 
 import { publicate } from '@/app/actions/serverActions';
 import { useRouter } from "next/navigation";
 import { ResponsePub } from '@/lib/types/response';
-import { upToCloudinary } from '@/lib/helpers/allHelpers';
+import S3factory from '@/lib/adapters/client/S3factoryClient';
 //TYPES
 type PubType = "image" | "video" | "audio" | "text";
 type Props = { type: PubType }
@@ -18,9 +18,10 @@ export default function PublicateForm({ type }:Props) {
   const [imgSrc, setImgSrc] = useState(null);
   const [state, formAction, isPending] = useActionState(publicate, initState);
   const [isTransition, startTransition] = useTransition();
-  const [isCloudinaryUpload, setIsCloudinaryUpload] = useState<boolean>(false);
+  const [isS3Upload, setIsS3Upload] = useState<boolean>(false);
   const [file, setFile] = useState<File|null>(null);
   const router = useRouter();
+
   useEffect(() => {
     if(state.message === "OK") {
       router.push("/home");
@@ -50,8 +51,9 @@ export default function PublicateForm({ type }:Props) {
     
     try {
       if(file) {
-        setIsCloudinaryUpload(true);
-        const secureUrl = await upToCloudinary(file);
+        setIsS3Upload(true);
+        const adapter = S3factory(process.env.NEXT_PUBLIC_S3_PROVIDER);
+        const secureUrl = await adapter.Upload(file);
         formData.set(type, secureUrl);
         //SUBMIT formAction with FormData
         startTransition(() => formAction(formData));
@@ -64,10 +66,10 @@ export default function PublicateForm({ type }:Props) {
     } catch(e) {
       console.log(e)
     } finally {
-      setIsCloudinaryUpload(false);
+      setIsS3Upload(false);
     }
   }
-  const isLoading = isPending || isCloudinaryUpload || isTransition;
+  const isLoading = isPending || isS3Upload || isTransition;
   //RENDER
   return (
     <form

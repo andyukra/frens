@@ -11,10 +11,9 @@ import {
 import { useSession } from "next-auth/react";
 import { Turnstile } from "nextjs-turnstile";
 import { upComment } from "@/app/actions/serverActions";
-import { upToCloudinary } from '@/lib/helpers/allHelpers';
 import { ResponseComment } from "@/lib/types/response";
 import { toast } from 'react-toastify';
-
+import S3factory from '@/lib/adapters/client/S3factoryClient';
 //TYPES
 type Props = {
   pubId: string;
@@ -26,7 +25,7 @@ let initState: ResponseComment = {};
 export default function ComentsForm({ pubId, cb }: Props) {
   //HOOKS
   const { status } = useSession();
-  const [isUploadingCloudinary, setIsUploadingCloudinary] =
+  const [isUploadingS3, setIsUploadingS3] =
     useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [state, formAction, isPending] = useActionState(upComment, initState);
@@ -58,8 +57,9 @@ export default function ComentsForm({ pubId, cb }: Props) {
     //INIT PROCESS
     try {
       if (file) {
-        setIsUploadingCloudinary(true);
-        const secureUrl = await upToCloudinary(file);
+        setIsUploadingS3(true);
+        const adapter = S3factory(process.env.NEXT_PUBLIC_S3_PROVIDER);
+        const secureUrl = await adapter.Upload(file);
         formData.set("image", secureUrl);
         formData.set("comment", "");
       }
@@ -71,10 +71,10 @@ export default function ComentsForm({ pubId, cb }: Props) {
     } catch (error) {
       console.error(error);
     } finally {
-      setIsUploadingCloudinary(false);
+      setIsUploadingS3(false);
     }
   }
-  const isLoading = isPending || isPendingTransition || isUploadingCloudinary;
+  const isLoading = isPending || isPendingTransition || isUploadingS3;
   //RENDER
   return (
     <>

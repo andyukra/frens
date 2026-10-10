@@ -1,9 +1,9 @@
 import { updateTag } from "next/cache";
 import { auth } from "@/auth";
-import { v2 as cloudinary } from "cloudinary";
 import blockeds from "@/lib/blocked";
 import { getVideoId, verifyToken } from "@/lib/helpers/allHelpers";
 import { webPushNotif } from './webPushService';
+import S3factory from '@/lib/adapters/server/S3factoryServer';
 //DB AND MODELS
 import { Types } from "mongoose";
 import { db } from "@/lib/db";
@@ -19,12 +19,6 @@ import {
 //********************** I N I T ****************************
 const PubModel = Pubs as any;
 const UserModel = Users as any;
-//CLOUDYNARI CREDENTIALS
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
-  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
 //SERVICES
 export default {
   async like(id: string) {
@@ -266,13 +260,15 @@ export default {
     }).lean();
     if (stat.length == 0) return { errors: "UNAUTHORIZED" };
     await PubModel.findByIdAndDelete(id);
-    //DELETE SRC FROM CLOUDYNARI
+    //DELETE SRC FROM S3
     if (type == "image" || type == "audio") {
       if (!src) return { errors: "NOSOURCE" };
-      const srcCode = src.replace(/.{4}$/, "");
-      cloudinary.uploader.destroy(srcCode, (err, res) => {
-        if (err) return { errors: "CLOUDINARYPROBLEM" };
-      });
+      const S3adapter = S3factory(process.env.NEXT_PUBLIC_S3_PROVIDER);
+      try {
+        await S3adapter.Delete(src);
+      } catch(e) {
+        return { errors: e }
+      }
     }
     //revaldiate cache
     updateTag("pubsPage-1");
@@ -294,10 +290,10 @@ export default {
     ).lean();
     //CHECK PUBS PER DAY LIMIT
     if (pubcountperday <= 0) return { errors: "MAXLIMITPERDAY" };
-    const signature = cloudinary.utils.api_sign_request(
-      { timestamp },
-      process.env.CLOUDINARY_SECRET
-    );
-    return { signature };
+    //GET SIGNATURE FROM S3
+    const S3adapter = S3factory(process.env.NEXT_PUBLIC_S3_PROVIDER);
+    const signature = S3adapter.getSignature(timestamp);
+
+    return { signature }
   }
 };
