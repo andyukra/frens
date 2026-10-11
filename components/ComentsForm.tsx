@@ -13,7 +13,7 @@ import { Turnstile } from "nextjs-turnstile";
 import { upComment } from "@/app/actions/serverActions";
 import { ResponseComment } from "@/lib/types/response";
 import { toast } from 'react-toastify';
-import S3factory from '@/lib/adapters/client/S3factoryClient';
+import S3factory from '@/lib/adapters/client/S3/S3factoryClient';
 //TYPES
 type Props = {
   pubId: string;

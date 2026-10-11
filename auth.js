@@ -26,14 +26,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
             const exists = await User.findOne({
                 email: profile.email
-            });
+            }).lean();
 
             if (exists) return true;
 
             await User.create({
                 name: profile.name,
                 image: profile.picture,
-                email: profile.email
+                email: profile.email,
             });
 
             return true;

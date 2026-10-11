@@ -103,7 +103,7 @@ export default function Pub({ info }: Props) {
     <article
       //@ts-ignore
       style={{ cornerShape: "squircle", borderRadius: "1rem" }}
-      className={`my-2 inline-block w-full ${info.vip ? vip : normal}`}
+      className={`mb-3 inline-block w-full ${info.vip ? vip : normal}`}
     >
       <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[2px] border-solid border-yellow-100">
         <CardHeader pub={info} pubDate={moment(info.date).fromNow()} />
@@ -194,7 +194,7 @@ export default function Pub({ info }: Props) {
             onClick={async () => {
               if (likesDissable) return;
               const res = await like(info._id);
-              if (res.status == "OK") {
+              if (res.message == "OK") {
                 console.log(res);
                 setLikes((prev) => prev + 1);
               } else {

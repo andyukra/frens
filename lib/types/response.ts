@@ -21,3 +21,7 @@ export type ResponseSignature = {
   errors?: string;
   signature?: string;
 };
+export type ResponseGeneric = {
+  errors?: string;
+  message?: string;
+};

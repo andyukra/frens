@@ -5,7 +5,7 @@ import { useState, useActionState, ChangeEvent, useEffect, useTransition } from 
 import { publicate } from '@/app/actions/serverActions';
 import { useRouter } from "next/navigation";
 import { ResponsePub } from '@/lib/types/response';
-import S3factory from '@/lib/adapters/client/S3factoryClient';
+import S3factory from '@/lib/adapters/client/S3/S3factoryClient';
 //TYPES
 type PubType = "image" | "video" | "audio" | "text";
 type Props = { type: PubType }

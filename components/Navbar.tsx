@@ -2,16 +2,12 @@
 
 import { Lobster } from "next/font/google";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { signIn, useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
-import {
-  FaPowerOff,
-  FaAddressCard,
-  FaHouse,
-  FaUser,
-} from "react-icons/fa6";
+import { FaUser } from "react-icons/fa6";
 import Searcher from "@/components/Searcher";
+import UserOpts from "@/components/UserOpts";
 
 const lobster = Lobster({ subsets: ["latin"], weight: ["400"] });
 
@@ -20,7 +16,6 @@ export default function Navbar() {
   const [dropdown, setDropdown] = useState(false);
   const [avatar, setAvatar] = useState('');
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
       if(!session?.user?.email) return;
@@ -50,53 +45,20 @@ export default function Navbar() {
             {!avatar ? <FaUser /> : (
               <img
                 onClick={() => setDropdown(!dropdown)}
-                className="rounded-full cursor-pointer shadow w-11 h-11 ring-4 ring-white"
+                className="rounded-full cursor-pointer shadow w-10 h-10 ring-2 ring-white"
                 src={avatar}
                 alt="avatar"
               />
             )}
-            {dropdown && (
-              <div className="absolute top-[120%] right-0 p-3 bg-slate-100 w-[250px] rounded z-10 shadow-md">
-                <ul className="flex flex-col gap-2">
-                  <li className="px-4 text-slate-950 text-center border-b-2 border-solid border-slate-950">
-                    <p className="font-bold text-xl hidden md:block pb-2">
-                      {session?.user.name}
-                    </p>
-                  </li>
-                  <li
-                    onClick={() => {
-                      router.push("/dashboard");
-                      setDropdown(false);
-                    }}
-                    className="flex justify-between items-center rounded bg-slate-100 px-4 py-2 cursor-pointer hover:bg-slate-300"
-                  >
-                    <p className="text-black font-bold text-lg">Dashboard</p>
-                    <FaAddressCard color="black" size={20} />
-                  </li>
-                  <li
-                    onClick={() => {
-                      router.push("/home");
-                      setDropdown(false);
-                    }}
-                    className="flex justify-between items-center rounded bg-slate-100 px-4 py-2 cursor-pointer hover:bg-slate-300"
-                  >
-                    <p className="text-black font-bold text-lg">Home</p>
-                    <FaHouse color="black" size={20} />
-                  </li>
-                  <li
-                    onClick={() => signOut()}
-                    className=" rounded flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-red-300"
-                  >
-                    <p className="text-black font-bold text-lg">Log out</p>
-                    <FaPowerOff color="black" size={20} />
-                  </li>
-                </ul>
-              </div>
-            )}
+            {dropdown && <UserOpts
+              username={session?.user?.name || ''}
+              cbClose={() => setDropdown(false)}
+              cbSignOut={() => signOut()}
+            />}
           </li>
         </ul>
       ) : (
-        <button onClick={() => signIn("google")} className="font-bold text-black">
+        <button onClick={() => signIn("google")} className="font-bold text-white">
           Log In
         </button>
       )}
