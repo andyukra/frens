@@ -1,3 +1,5 @@
+import { Avatar } from '@/lib/types/avatar';
+import { Publication } from '@/lib/types/publication';
 //PARAMETERS TYPES
 export type AvatarAndPubsPerDay = { image: string, pubcountperday: number };
 export type Pub = {
@@ -15,6 +17,12 @@ export type Comment = {
 	avatar: string,
 	content: string
 }
+export type GetPubs = {
+	search?: string,
+	author?: string,
+	docsPerPage: number,
+	skip: number
+}
 //INTERFACE ADAPTER
 export interface DbAdapter {
 	like(pubId: string, userId: string): Promise<void>;
@@ -23,4 +31,8 @@ export interface DbAdapter {
 	substractOnePubsPerDay(email: string): Promise<void>;
 	postPub(pub: Pub): Promise<void>;
 	deletePub(pubId: string, author: string): Promise<void>;
+	getAvatars(limit: number): Promise<Avatar[]>;
+	getPubs(params: GetPubs): Promise<string>;
+	getPub(id: string): Promise<Publication>;
+	getExtras(amount: number): Promise<any>;
 }

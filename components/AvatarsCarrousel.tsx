@@ -1,6 +1,4 @@
-
-//TYPES
-type Avatar = {image: string};
+import { Avatar } from '@/lib/types/avatar';
 //MAIN FC
 export default function AvatarsCarrousel({ avatars }:Record<string, Avatar[]>) {
   return (

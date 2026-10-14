@@ -24,7 +24,7 @@ function filterMsg(msg: string, setData: (url: string, alt: string) => void) {
           style={{cornerShape: 'squircle', borderRadius: '1rem'}}
           src={msg}
           alt="comentario con imagen"
-          className="max-w-[200px] max-h-[400px] ring-[0.2rem] ring-yellow-500"
+          className="max-w-[200px] max-h-[400px]"
         />
       </button>
     );

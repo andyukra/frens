@@ -16,3 +16,5 @@ export type Publication = {
   vip: boolean,
   _id: string
 }
+
+export type PublicationsCount = { pubs: Publication[], count: number };

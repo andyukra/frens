@@ -21,12 +21,13 @@ export default async function PubsList({ searchParams, docsPerPage  }:Props) {
   const search = params.search ?? "";
   //GET PUBS
   //SELECT CACHEABLE OR UNCACHEABLE
-  const data = await (
+  const { message, errors } = await (
     (author === 'all' && !search && page < 4) ?
     getCacheableData(page, docsPerPage) :
     getUncacheableData(page, search, author, docsPerPage)
   );
-  const { pubs, count } = JSON.parse(data);
+  if(errors) return;
+  const { pubs, count } = JSON.parse(message);
   return (
 	<div>
 		{search && (

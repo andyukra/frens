@@ -41,8 +41,8 @@ export default function Pub({ params }) {
 async function Publication({ params }) {
   const { id } = await params;
   if (!id || !/^[a-f\d]{24}$/i.test(id)) return <Empty />;
-  const pub:Publication = await getPub(id);
-  if (!pub) return <Empty />;
+  const { message } = await getPub(id);
+  if (!message) return <Empty />;
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-8">
 
@@ -59,14 +59,14 @@ async function Publication({ params }) {
           <article 
             //@ts-ignore
             style={{cornerShape: 'squircle', borderRadius: '2rem'}}
-            className={`${pub.vip ? vip : normal}`}
+            className={`${message.vip ? vip : normal}`}
           >
 
             {/* HEADER */}
             <div className="p-5">
               <CardHeader
-                pub={pub}
-                pubDate={moment(pub.date).fromNow()}
+                pub={message}
+                pubDate={moment(message.date).fromNow()}
               />
             </div>
 
@@ -77,30 +77,30 @@ async function Publication({ params }) {
                 style={{cornerShape: 'squircle', borderRadius: '0.8rem'}}
                 className={`${nunito.className} text-center text-xl font-[900] text-yellow-300 p-2 bg-[#000] ring-2 ring-yellow-300`}
               >
-                {pub.title}
+                {message.title}
               </h1>
             </div>
 
             {/* MEDIA */}
             <div className="p-5">
 
-              {pub.image && (
+              {message.image && (
                 <div className="overflow-hidden rounded-xl p-1">
-                  <PubImage image={pub.image} title={pub.title} />
+                  <PubImage image={message.image} title={message.title} />
                 </div>
               )}
 
-              {pub.yt && (
+              {message.yt && (
                 <div className="overflow-hidden rounded-xl">
-                  <YtPlayer link={pub.yt} />
+                  <YtPlayer link={message.yt} />
                 </div>
               )}
 
-              {pub.audio && (
+              {message.audio && (
                 <div className="rounded-xl bg-gray-100 p-4">
                   <audio
                     className="w-full"
-                    src={pub.audio}
+                    src={message.audio}
                     controls
                   />
                 </div>
@@ -109,10 +109,10 @@ async function Publication({ params }) {
             </div>
 
             {/* DESCRIPTION */}
-            {pub.description && (
+            {message.description && (
               <div className="border-t-2 border-yellow-100 px-5 py-5">
                 <p className="whitespace-pre-wrap leading-7 text-white">
-                  {pub.description}
+                  {message.description}
                 </p>
               </div>
             )}
@@ -135,8 +135,8 @@ async function Publication({ params }) {
             </header>
 
             <ComentariesBox
-              comments={pub.comments || []}
-              pubId={pub._id.toString()}
+              comments={message.comments || []}
+              pubId={message._id.toString()}
             />
 
           </article>

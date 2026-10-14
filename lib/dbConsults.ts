@@ -1,81 +1,61 @@
-import { db } from "@/lib/db";
 import { cacheLife, cacheTag, unstable_cache } from 'next/cache';
-import Pubs from "@/lib/models/pubs";
-import Users from "@/lib/models/users";
-const PubsModel = Pubs as any;
-const UsersModel = Users as any;
+import DbFactory from '@/lib/adapters/server/db/dbFactory';
+import { ResponseGeneric, ResponseAvatars, ResponseGetPub, ResponseExtras } from '@/lib/types/response';
 
-export async function getAvatars(limit:number = 30) {
+//CONSULTS
+export async function getAvatars(limit:number = 30): Promise<ResponseAvatars> {
   'use cache: remote';
 
   cacheLife("days");
   cacheTag("avatarsCarrousel");
 
-  await db();
-  return await UsersModel.find({}, { image: 1, _id: 0 }).limit(limit).lean();
+  const dbAdapter = DbFactory(process.env.DB_TYPE);
+  try {
+    const avatars = await dbAdapter.getAvatars(limit);
+    return { message: avatars };
+  } catch (error) { return { errors: error } }
 }
 
-export async function getUncacheableData(page:number, search:string, author:string, docsPerPage:number) {
-  await db();
+export async function getUncacheableData(page:number, search:string, author:string, docsPerPage:number): Promise<ResponseGeneric> {
   const skip = (page - 1) * docsPerPage;
-  if (search) {
-    const pubs = await PubsModel.find({ title: { $regex: search, $options: "i" } })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(docsPerPage).lean();
-    const count = await PubsModel.find({
-      title: { $regex: search, $options: "i" },
-    }).countDocuments().lean();
-    return JSON.stringify({ pubs, count });
-  }
-  if (author !== "all" && !search) {
-    const pubs = await PubsModel.find({ author: author })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(docsPerPage).lean();
-    const count = await PubsModel.find({ author: author }).countDocuments().lean();
-    return JSON.stringify({ pubs, count });
-  }
-  const pubs = await PubsModel.find({})
-    .sort({ date: -1 })
-    .skip(skip)
-    .limit(docsPerPage).lean();
-  const count = await PubsModel.find({}).countDocuments().lean();
-  return JSON.stringify({ pubs, count });
+  const dbAdapter = DbFactory(process.env.DB_TYPE);
+  try {
+    const pubs = await dbAdapter.getPubs({docsPerPage, search, author, skip});
+    return { message: JSON.stringify(pubs) };
+  } catch (error) { return { errors: error } }
 }
 
-export async function getCacheableData(page:number, docsPerPage:number) {
+export async function getCacheableData(page:number, docsPerPage:number): Promise<ResponseGeneric> {
   'use cache: remote';
-
-  console.log("🔥 MONGODB CACHEABLE QUERY:", page);
 
   //CACHE CONFIG
   cacheLife("days");
   cacheTag(`pubsPage-${page}`);
 
-  await db();
   const skip = (page - 1) * docsPerPage;
-  const pubs = await PubsModel.find({})
-    .sort({ date: -1 })
-    .skip(skip)
-    .limit(docsPerPage).lean();
-  const count = await PubsModel.find({}).countDocuments().lean();
-  return JSON.stringify({ pubs, count });
+  const dbAdapter = DbFactory(process.env.DB_TYPE);
+
+  try {
+    const pubs = await dbAdapter.getPubs({docsPerPage, skip});
+    return { message: pubs };
+  } catch (error) { return { errors: error } }
 }
 
-export async function getPub(id:string) {
-  await db();
+export async function getPub(id:string): Promise<ResponseGetPub> {
+  const dbAdapter = DbFactory(process.env.DB_TYPE);
   try {
-    const pub = await PubsModel.findById(id).lean();
-    if (!pub) return;
-    return JSON.parse(JSON.stringify(pub));
-  } catch (error) { return }
+    const pub = await dbAdapter.getPub(id);
+    return { message: pub }
+  } catch (error) { return { errors: error }}
 }
 
 export const getExtras = unstable_cache(
-  async (amount = 10) => {
-    await db();
-    return await PubsModel.aggregate([{ $sample: { size: amount } }]);
+  async (amount = 10): Promise<ResponseExtras> => {
+    const dbAdapter = DbFactory(process.env.DB_TYPE);
+    try {
+      const extras = await dbAdapter.getExtras(amount);
+      return { message: extras };
+    } catch (error) { return { errors: error } }
   },
   ['extras'], // clave única de caché
   { revalidate: 3600 } // revalida cada 3600 segundos (1 hora)

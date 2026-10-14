@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { getExtras } from "@/lib/dbConsults";
-//TYPES IMPORT
-import type { Publication } from '@/lib/types/publication';
 
 export default async function Extras() {
-  const extras:Publication[] = await getExtras(10);
+  const { message, errors } = await getExtras(10);
   return (
     <>
       <h2 className="text-2xl font-bold text-center tracking-widest p-5 bg-black w-full rounded-lg shadow-md">
@@ -14,7 +12,7 @@ export default async function Extras() {
         <div
           className="flex gap-4 w-full h-full avatarCarrousel"
         >
-          {extras.map((elem, key) => {
+          {message.map((elem, key) => {
             if (elem.image) {
               return (
                 <article
@@ -36,7 +34,7 @@ export default async function Extras() {
               );
             }
           })}
-          {extras.map((elem, key) => {
+          {message.map((elem, key) => {
             if (elem.image) {
               return (
                 <article

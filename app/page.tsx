@@ -7,7 +7,7 @@ import AvatarsCarrousel from '@/components/AvatarsCarrousel';
 const lobster = Lobster({ subsets: ['latin'], weight: ['400'] });
 
 export default async function Index() {
-    const avatars = await getAvatars(30);
+    const { message } = await getAvatars(30);
     return(
         <main>
             <section className='text-white lg:grid lg:grid-cols-2 px-10 pb-[64px] gap-5 items-center h-[calc(100dvh-64px)] flex justify-center'>
@@ -25,7 +25,7 @@ export default async function Index() {
                         style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
                         className='mt-2 px-5 py-3 pointer font-[600] text-white bg-black'>Visitar</button>
                     </Link>
-                    <AvatarsCarrousel avatars={avatars} />
+                    <AvatarsCarrousel avatars={message} />
                 </div>
                 <div className="image hidden lg:block">
                     <img

@@ -1,3 +1,6 @@
+import { Avatar } from '@/lib/types/avatar';
+import { Publication, PublicationsCount } from '@/lib/types/publication';
+
 export type ResponsePub = {
   errors?: {
     title?: string[];
@@ -25,3 +28,15 @@ export type ResponseGeneric = {
   errors?: string;
   message?: string;
 };
+export type ResponseAvatars = {
+  errors?: string,
+  message?: Avatar[]
+}
+export type ResponseGetPub = {
+  errors?: string,
+  message?: Publication
+}
+export type ResponseExtras = {
+  errors?: string,
+  message?: Publication[]
+}
