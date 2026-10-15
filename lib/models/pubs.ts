@@ -69,7 +69,8 @@ const pubs = new mongoose.Schema({
       type: String,
       required: true
     }
-  }]
+  }],
+  vip: { type: Boolean,  default: false}
 });
 
 const Pubs = mongoose.models.pubs || mongoose.model("pubs", pubs);

@@ -59,7 +59,7 @@ audio::-webkit-media-controls-enclosure {
   border-radius: 1rem;
   position: absolute;
   inset: -4px;
-  background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+  background: linear-gradient(to right, #43ff2a, #c471ed, #12c2e9, #f00);
   background-size: 400% 400%;
   animation: vipPubAnimate 2.5s ease infinite;
 }

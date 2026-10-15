@@ -126,13 +126,14 @@ export default {
           };
     if(yt) {
       yt_id = getVideoId(yt.trim());
+      console.log(yt_id);
       if (!yt_id) return { errors: { yt: ["Link de yt erróneo"] } };
     }
     //POST PUBLICATION
     const Pub = {
       author: user.name,
 	    avatar: Avatar,
-	    title, description, image, audio, yt
+	    title, description, image, audio, yt: yt_id
     }
     try {
       await dbAdapter.postPub(Pub);

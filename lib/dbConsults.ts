@@ -21,7 +21,7 @@ export async function getUncacheableData(page:number, search:string, author:stri
   const dbAdapter = DbFactory(process.env.DB_TYPE);
   try {
     const pubs = await dbAdapter.getPubs({docsPerPage, search, author, skip});
-    return { message: JSON.stringify(pubs) };
+    return { message: pubs };
   } catch (error) { return { errors: error } }
 }
 
