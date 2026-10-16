@@ -78,7 +78,7 @@ export default {
       updateTag("pubsPage-1");
       updateTag("pubsPage-2");
 
-      return { message: comment };
+      return { message: comment || image };
   },
   async publicate(
     prevState: ResponsePub,
