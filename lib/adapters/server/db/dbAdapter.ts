@@ -25,14 +25,20 @@ export type GetPubs = {
 }
 //INTERFACE ADAPTER
 export interface DbAdapter {
-	like(pubId: string, userId: string): Promise<void>;
+	//POSTS
+	like(pubId: string, email: string): Promise<void>;
 	getUserAvatarAndPubsPerDay(email: string): Promise<AvatarAndPubsPerDay>;
 	pushComment(comment: Comment): Promise<void>;
 	substractOnePubsPerDay(email: string): Promise<void>;
 	postPub(pub: Pub): Promise<void>;
 	deletePub(pubId: string, author: string): Promise<void>;
+	addFavourite(pubId: string, username: string): Promise<void>;
+	delFavourite(pubId: string, username: string): Promise<void>;
+	createUser(name: string, image: string, email: string): Promise<void>;
+	//GETTS
 	getAvatars(limit: number): Promise<Avatar[]>;
 	getPubs(params: GetPubs): Promise<string>;
 	getPub(id: string): Promise<Publication>;
 	getExtras(amount: number): Promise<any>;
+	getFavourites(username: string): Promise<Publication[]>;
 }

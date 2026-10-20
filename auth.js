@@ -4,6 +4,7 @@ import Google from "next-auth/providers/google";
 import { db } from "@/lib/db";
 import User from "@/lib/models/users";
 import blocked from "@/lib/blocked";
+import DbFactory from "@/lib/adapters/server/db/dbFactory";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers: [
@@ -22,21 +23,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 return false;
             }
 
-            await db();
+            const dbFactory = DbFactory(process.env.DB_TYPE);
 
-            const exists = await User.findOne({
-                email: profile.email
-            }).lean();
-
-            if (exists) return true;
-
-            await User.create({
-                name: profile.name,
-                image: profile.picture,
-                email: profile.email,
-            });
-
-            return true;
+            try {
+                const exists = await dbFactory.getUserAvatarAndPubsPerDay(profile.email);
+                if(exists) return true;
+                await dbFactory.createUser(profile.name, profile.picture, profile.email);
+                return true;
+            } catch (error) {
+                return false;
+            }
         },
 
         authorized({ auth, request }) {
@@ -44,7 +40,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
             const isProtectedRoute =
                 request.nextUrl.pathname.startsWith("/dashboard") ||
-                request.nextUrl.pathname.startsWith("/publicate");
+                request.nextUrl.pathname.startsWith("/publicate") || 
+                request.nextUrl.pathname.startsWith("/favourites"); 
 
             if (isProtectedRoute) {
                 return isLoggedIn;

@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag, unstable_cache } from 'next/cache';
 import DbFactory from '@/lib/adapters/server/db/dbFactory';
+import services from "./services/allServices";
 import { ResponseGeneric, ResponseAvatars, ResponseGetPub, ResponseExtras } from '@/lib/types/response';
 
 //CONSULTS
@@ -46,7 +47,7 @@ export async function getPub(id:string): Promise<ResponseGetPub> {
   try {
     const pub = await dbAdapter.getPub(id);
     return { message: pub }
-  } catch (error) { return { errors: error }}
+  } catch (error) { return { errors: error instanceof Error ? error.message : "Error al obtener la publicación" }}
 }
 
 export const getExtras = unstable_cache(
@@ -60,3 +61,7 @@ export const getExtras = unstable_cache(
   ['extras'], // clave única de caché
   { revalidate: 3600 } // revalida cada 3600 segundos (1 hora)
 );
+
+export async function getFavourites(): Promise<ResponseGeneric> {
+  return await services.getFavourites();
+}

@@ -50,26 +50,8 @@ const pubs = new mongoose.Schema({
     },
   ],
   date: { type: Date, default: Date.now },
-  favourite: [{
-    count: {
-      type: Number,
-      default: 0
-    },
-    author: {
-      type: String,
-      required: true
-    }
-  }],
-  likes: [{
-    count: {
-      type: Number,
-      default: 0
-    },
-    author: {
-      type: String,
-      required: true
-    }
-  }],
+  favourite: { type: Number, default: 0 },
+  likes: { type: [String], default: [] },
   vip: { type: Boolean,  default: false}
 });
 

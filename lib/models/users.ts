@@ -15,9 +15,9 @@ const user = new mongoose.Schema({
         required: true,
         
     },
-    portrait: {
-        type: String,
-        default: '',
+    favourites: {
+        type: [String],
+        default: []
     },
     pubcountperday: {
         type: Number,

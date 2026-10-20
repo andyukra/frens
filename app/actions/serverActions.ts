@@ -18,3 +18,6 @@ export async function Delete(form: FormData) {
 export async function getSignature(timestamp: number) {
   return services.getSignature(timestamp);
 }
+export async function addFavourite(pubId: string) {
+  return await services.addFavourite(pubId);
+}
