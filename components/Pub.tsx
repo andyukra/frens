@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import moment from "moment";
 //@ts-ignore
-import "moment/locale/es";
 import {
   FaEllipsis,
   FaRegThumbsUp,
@@ -26,10 +24,10 @@ import { like } from "@/app/actions/serverActions";
 import Clipboard from "@/components/Clipboard";
 import CardHeader from "@/components/CardHeader";
 import BasicSkeleton from "@/components/BasicSkeleton";
+import RelativeTime from "@/components/RelativeTime";
 //TYPES IMPORT
 import type { Publication } from "@/lib/types/publication";
 //GLOBAL VARS
-moment.locale("es");
 const ComentariesBox = dynamic(() => import("@/components/ComentariesBox"), {
   loading: () => <BasicSkeleton />,
 });
@@ -106,7 +104,7 @@ export default function Pub({ info }: Props) {
       className={`mb-3 inline-block w-full ${info.vip ? vip : normal}`}
     >
       <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[2px] border-solid border-yellow-100">
-        <CardHeader pub={info} pubDate={moment(info.date).fromNow()} />
+        <CardHeader pub={info} pubDate={<RelativeTime date={info.date} />} />
         {/* ACTIONS */}
         <div className="relative">
           {opts && (

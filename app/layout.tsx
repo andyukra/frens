@@ -5,7 +5,8 @@ import { Analytics } from "@vercel/analytics/next";
 //COMPONENTS
 import OneSignalInit from "@/components/OneSignalInit";
 import ImageViewer from "@/components/ImageViewer";
-import { ToastContainer, Bounce } from 'react-toastify';
+import { ToastContainer, Bounce } from "react-toastify";
+import TanstackProvider from "./TanstackProvider";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "600"] });
 
@@ -19,21 +20,23 @@ export default function RootLayout({ children }) {
       <body style={quicksand.style}>
         <OneSignalInit />
         <Provider>
-          <ToastContainer
-            position="top-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={true}
-            closeOnClick={true}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            transition={Bounce}
-          />
-          <ImageViewer />
-          {children}
+          <TanstackProvider>
+            <ToastContainer
+              position="top-left"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={true}
+              closeOnClick={true}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+              transition={Bounce}
+            />
+            <ImageViewer />
+            {children}
+          </TanstackProvider>
         </Provider>
         <Analytics />
       </body>

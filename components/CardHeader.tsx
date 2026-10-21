@@ -1,3 +1,7 @@
+import React from "react";
+
+type Data = { avatar: string , author: string };
+type Props = { pub: Data, pubDate: React.ReactNode }
 
 export default function CardHeader({pub, pubDate}) {
   return (
@@ -10,7 +14,7 @@ export default function CardHeader({pub, pubDate}) {
         />
         <div>
           <h2 className="text-lg font-bold">{pub.author}</h2>
-          <p className="text-sm text-yellow-100">{pubDate}</p>
+          {pubDate}
         </div>
       </div>
     </div>
