@@ -1,6 +1,7 @@
 import { getUncacheableData, getCacheableData } from '@/lib/dbConsults';
+import { NextResponse, NextRequest } from 'next/server';
 
-export async function GET(req) {
+export async function GET(req: NextRequest) {
 	const { searchParams } = new URL(req.url);
 	const page: number = Number(searchParams.get('page')) ?? 1;
 	const search: string = searchParams.get('search') ?? "";
@@ -13,8 +14,8 @@ export async function GET(req) {
 		getUncacheableData(page, search, author, docsPerPage)
 	);
 
-	if (errors) return new Response(errors).status;
+	if (errors) return NextResponse.json({errors}, {status: 404});
 
-	return new Response(message).ok;
+	return NextResponse.json({message}, {status: 200});
 
 }
