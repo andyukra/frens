@@ -224,7 +224,7 @@ export default function Pub({ info }: Props) {
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold text-yellow-100">{info?.comments.length}</p>
+          <p className="font-bold text-yellow-100">{info?.comments?.length}</p>
         </div>
       </div>
       {comment && (

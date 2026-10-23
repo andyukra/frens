@@ -184,7 +184,8 @@ export default function (): DbAdapter {
       await db();
       const opts = search
         ? { title: { $regex: search, $options: "i" } }
-        : author
+        : (author && author != 'all')
+        
           ? { author: author }
           : {};
       const pubs = await PubModel.find(opts)

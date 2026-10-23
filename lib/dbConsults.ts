@@ -38,6 +38,8 @@ export async function getCacheableData(page:number, docsPerPage:number): Promise
 
   try {
     const pubs = await dbAdapter.getPubs({docsPerPage, skip});
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    await sleep(1000);
     return { message: pubs };
   } catch (error) { return { errors: error } }
 }

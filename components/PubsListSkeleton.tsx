@@ -2,7 +2,7 @@ import BasicSkeleton from "@/components/BasicSkeleton";
 
 export default function PubsListSkeleton() {
   return (
-	<div className="lg:columns-4 md:columns-2 break-inside-avoid">
+	<div className="lg:columns-4 md:columns-2 break-inside-avoid w-full">
 		{[...Array(20)].map((_, key) => <BasicSkeleton key={key}/>)}
 	</div>
   )

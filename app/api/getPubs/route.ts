@@ -3,9 +3,9 @@ import { NextResponse, NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
 	const { searchParams } = new URL(req.url);
-	const page: number = Number(searchParams.get('page')) ?? 1;
-	const search: string = searchParams.get('search') ?? "";
-	const author: string = searchParams.get('author') ?? "all";
+	const page: number = Number(searchParams.get('page')) || 1;
+	const search: string = searchParams.get('search') || "";
+	const author: string = searchParams.get('author') || "all";
 	const docsPerPage: number = 20;
 	
 	const { message, errors } = await (
