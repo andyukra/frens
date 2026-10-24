@@ -1,6 +1,6 @@
 import {
   DbAdapter,
-  AvatarAndPubsPerDay,
+  AvatarUsernameAndPubsPerDay,
   Comment,
   Pub,
   GetPubs,
@@ -32,7 +32,8 @@ export default function (): DbAdapter {
         { new: true },
       );
       if (result.matchedCount === 0) throw new Error("El post no existe");
-      if (result.modifiedCount === 0) throw new Error("Ya le diste like a este post");
+      if (result.modifiedCount === 0)
+        throw new Error("Ya le diste like a este post");
     },
     pushComment: async ({
       pubId,
@@ -93,28 +94,27 @@ export default function (): DbAdapter {
       const session = await startSession();
       try {
         await session.withTransaction(async () => {
-          const pubResult = await PubModel.updateOne(
-            { _id: pubId },
-            { $inc: { favourite: 1 } },
-            { session },
-          );
-
-          if (pubResult.matchedCount === 0)
-            throw new Error("La publicación no existe");
-
-          const userResult = await UserModel.updateOne(
+          //EXIST USER? and get his favourites
+          const user = await UserModel.findOne({ name: username })
+            .select("favourites")
+            .lean()
+            .session(session);
+          if (!user) throw new Error("El usuario no existe");
+          //VERIF DUPLICATED FAVOURITES
+          const existsPub = user.favourites.some((fav: string) => fav == pubId);
+          if (existsPub)
+            throw new Error("Ya tienes esa publicación en tus favoritos");
+          //ADD FAVOURITE TO USER
+          await UserModel.updateOne(
             { name: username },
-            {
-              $push: {
-                favourites: pubId,
-              },
-            },
-            { session },
-          );
-
-          if (userResult.matchedCount === 0) {
-            throw new Error("El usuario no existe");
-          }
+            { $push: { favourites: pubId } },
+          ).session(session);
+          //INC PUB FAVOURITES COUNT
+          const pubResult = await PubModel.updateOne(
+            { id: pubId },
+            { $inc: { favourite: 1 } }
+          ).session(session);
+          if(pubResult.matchedCount === 0) throw new Error("La publicación no existe");
         });
       } finally {
         session.endSession();
@@ -165,15 +165,15 @@ export default function (): DbAdapter {
       await db();
       return await UserModel.find({}, { image: 1, _id: 0 }).limit(limit).lean();
     },
-    getUserAvatarAndPubsPerDay: async (
+    getUserAvatarUsernameAndPubsPerDay: async (
       email: string,
-    ): Promise<AvatarAndPubsPerDay> => {
+    ): Promise<AvatarUsernameAndPubsPerDay> => {
       await db();
-      const { image, pubcountperday } = await UserModel.findOne(
+      const { image, name, pubcountperday } = await UserModel.findOne(
         { email: email },
-        { image: 1, _id: 0, pubcountperday: 1 },
+        { image: 1, _id: 0, pubcountperday: 1, name: 1 },
       ).lean();
-      return { image, pubcountperday };
+      return { image, name, pubcountperday };
     },
     getPubs: async ({
       search,
@@ -184,8 +184,7 @@ export default function (): DbAdapter {
       await db();
       const opts = search
         ? { title: { $regex: search, $options: "i" } }
-        : (author && author != 'all')
-        
+        : author && author != "all"
           ? { author: author }
           : {};
       const pubs = await PubModel.find(opts)

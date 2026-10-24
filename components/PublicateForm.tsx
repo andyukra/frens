@@ -25,9 +25,8 @@ export default function PublicateForm({ type }:Props) {
   useEffect(() => {
     if(state.message === "OK") {
       router.push("/home");
-      initState = {};
     }
-  }, [state]);
+  }, [state, router]);
   //FUNCTIONS HANDLERS
   function previewImg(img: File) {
     const reader = new FileReader();

@@ -21,3 +21,6 @@ export async function getSignature(timestamp: number) {
 export async function addFavourite(pubId: string) {
   return await services.addFavourite(pubId);
 }
+export async function delFavourite(pubId: string) {
+  return await services.delFavourite(pubId);
+}

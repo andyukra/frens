@@ -61,12 +61,13 @@ export default {
     const dbAdapter = DbFactory(process.env.DB_TYPE);
     //POST COMMENT
     try {
-      const { image: avatar } = await dbAdapter.getUserAvatarAndPubsPerDay(
+      //GET AVATAR AND USERNAME
+      const { image: avatar, name } = await dbAdapter.getUserAvatarUsernameAndPubsPerDay(
         user.email,
       );
       const Comment = {
         pubId: id,
-        author: user.name,
+        author: name,
         avatar: avatar,
         content: image ? image : comment,
       };
@@ -92,12 +93,13 @@ export default {
     //GLOBAL VARS
     let Avatar = "";
     let yt_id = "";
+    let Name = "";
     //GET DB ADAPTER
     const dbAdapter = DbFactory(process.env.DB_TYPE);
     //GET USER DATA FROM DB
     try {
-      const { image: avatar, pubcountperday } =
-        await dbAdapter.getUserAvatarAndPubsPerDay(user.email);
+      const { image: avatar, name, pubcountperday } =
+        await dbAdapter.getUserAvatarUsernameAndPubsPerDay(user.email);
       //CHECK PUBS PER DAY LIMIT
       if (pubcountperday <= 0)
         return {
@@ -109,6 +111,7 @@ export default {
       await dbAdapter.substractOnePubsPerDay(user.email);
       //SET AVATAR
       Avatar = avatar;
+      Name = name;
     } catch (error) {
       return { errors: error };
     }
@@ -135,7 +138,7 @@ export default {
     }
     //POST PUBLICATION
     const Pub = {
-      author: user.name,
+      author: Name,
       avatar: Avatar,
       title,
       description,
@@ -198,7 +201,7 @@ export default {
     //GET DB ADAPTER AND GET PUBCOUNTPERDAY
     const dbAdapter = DbFactory(process.env.DB_TYPE);
     try {
-      const { pubcountperday } = await dbAdapter.getUserAvatarAndPubsPerDay(
+      const { pubcountperday } = await dbAdapter.getUserAvatarUsernameAndPubsPerDay(
         user.email,
       );
       //CHECK PUBS PER DAY FOR THIS USER
