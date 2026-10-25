@@ -39,6 +39,6 @@ export interface DbAdapter {
 	getAvatars(limit: number): Promise<Avatar[]>;
 	getPubs(params: GetPubs): Promise<string>;
 	getPub(id: string): Promise<Publication>;
-	getExtras(amount: number): Promise<any>;
+	getExtras(amount: number): Promise<Record<string, string>[]>;
 	getFavourites(username: string): Promise<Publication[]>;
 }

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 //COMPONENTS
-import Extras from "@/components/Extras";
-import ExtrasSkeleton from "@/components/ExtrasSkeleton";
+// import Extras from "@/components/Extras";
+import InfiniteSlider from '@/components/InfiniteSlider';
 import PubsListSkeleton from "@/components/PubsListSkeleton";
 import HomeContent from "@/components/HomeContent";
 // Metadata for the page
@@ -18,8 +18,8 @@ export default async function Home({ searchParams }) {
           <Suspense fallback={<PubsListSkeleton />}>
             <HomeContent searchParams={searchParams} />
           </Suspense>
-          <Suspense fallback={<ExtrasSkeleton />}>
-            <Extras />
+          <Suspense fallback={<h1>Cargando extras...</h1>}>
+            <InfiniteSlider />
           </Suspense>
         </div>
       </section>

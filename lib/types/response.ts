@@ -38,5 +38,5 @@ export type ResponseGetPub = {
 }
 export type ResponseExtras = {
   errors?: string,
-  message?: Publication[]
+  message?: Record<string, string>[]
 }

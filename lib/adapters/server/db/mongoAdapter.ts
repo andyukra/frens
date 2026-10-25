@@ -112,9 +112,10 @@ export default function (): DbAdapter {
           //INC PUB FAVOURITES COUNT
           const pubResult = await PubModel.updateOne(
             { id: pubId },
-            { $inc: { favourite: 1 } }
+            { $inc: { favourite: 1 } },
           ).session(session);
-          if(pubResult.matchedCount === 0) throw new Error("La publicación no existe");
+          if (pubResult.matchedCount === 0)
+            throw new Error("La publicación no existe");
         });
       } finally {
         session.endSession();
@@ -200,9 +201,21 @@ export default function (): DbAdapter {
       const pub = await PubModel.findById(id).lean();
       return pub;
     },
-    getExtras: async (amount: number): Promise<any> => {
+    getExtras: async (amount: number): Promise<Record<string, string>[]> => {
       await db();
-      const extras = await PubModel.aggregate([{ $sample: { size: amount } }]);
+      const extras: Record<string, string>[] = await PubModel.aggregate([
+        {
+          $match: {
+            image: {
+              $exists: true,
+              $ne: null,
+              $not: { $type: "string", $regex: /^$/ },
+            },
+          },
+        },
+        { $sample: { size: amount } },
+        { $project: { _id: 1, image: 1 } },
+      ]);
       return extras;
     },
     getFavourites: async (username: string): Promise<Publication[]> => {
