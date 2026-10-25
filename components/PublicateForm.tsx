@@ -6,6 +6,8 @@ import { publicate } from '@/app/actions/serverActions';
 import { useRouter } from "next/navigation";
 import { ResponsePub } from '@/lib/types/response';
 import S3factory from '@/lib/adapters/client/S3/S3factoryClient';
+import { toast } from 'react-toastify';
+import { useQueryClient } from '@tanstack/react-query';
 //TYPES
 type PubType = "image" | "video" | "audio" | "text";
 type Props = { type: PubType }
@@ -15,6 +17,7 @@ let initState: ResponsePub = {};
 //MAIN FC
 export default function PublicateForm({ type }:Props) {
   //HOOKS
+  const queryClient = useQueryClient();
   const [imgSrc, setImgSrc] = useState(null);
   const [state, formAction, isPending] = useActionState(publicate, initState);
   const [isTransition, startTransition] = useTransition();
@@ -24,7 +27,17 @@ export default function PublicateForm({ type }:Props) {
 
   useEffect(() => {
     if(state.message === "OK") {
+      toast.success("Publicación subida con éxito!")
+      queryClient.invalidateQueries({ queryKey: ['pubs'] });
       router.push("/home");
+    } else if(state.hasOwnProperty('errors')) {
+      if(state.errors.hasOwnProperty('server')) {
+        toast.error(state.errors.server);
+        return;
+      }
+      for(const err in state.errors) {
+        toast.error(state.errors[err]);
+      }
     }
   }, [state, router]);
   //FUNCTIONS HANDLERS

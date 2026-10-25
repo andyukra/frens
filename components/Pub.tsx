@@ -13,11 +13,12 @@ import {
 } from "react-icons/fa6";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useImageViewer } from "@/lib/stores/dialogs";
 import { Nunito } from "next/font/google";
 import { Delete } from "@/app/actions/serverActions";
+import { toast } from 'react-toastify';
+import { useQueryClient } from '@tanstack/react-query';
 //COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
 import { like } from "@/app/actions/serverActions";
@@ -40,7 +41,7 @@ type Props = { info: Publication };
 export default function Pub({ info }: Props) {
   //HOOKS
   const { data: session } = useSession();
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [comment, setComment] = useState(false);
   const [opts, setOpts] = useState(false);
   const [delLoader, setDelLoader] = useState(false);
@@ -75,9 +76,10 @@ export default function Pub({ info }: Props) {
     setOpts(false);
     setDelLoader(false);
     if (res.message == "OK") {
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ['pubs'] });
+      toast.success('Publicación eliminada con éxito!');
     } else {
-      alert("No se pudo eliminar el post");
+      toast.error("No se pudo eliminar el post");
     }
   }
   function detectImg(txt: string) {
