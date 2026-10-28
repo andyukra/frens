@@ -2,6 +2,16 @@
 
 import Link from "next/link";
 //@ts-ignore
+import { Nunito } from "next/font/google";
+import { Delete } from "@/app/actions/serverActions";
+import { toast } from 'react-toastify';
+//HOOKS
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { useQueryClient } from '@tanstack/react-query';
+import { useImageViewer } from "@/lib/stores/dialogs";
+import { useCommentsBox } from '@/lib/stores/dialogs';
+//COMPONENTS AND UI
 import {
   FaEllipsis,
   FaRegThumbsUp,
@@ -11,27 +21,14 @@ import {
   FaArrowRightFromBracket,
   FaDeleteLeft,
 } from "react-icons/fa6";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
-import dynamic from "next/dynamic";
-import { useImageViewer } from "@/lib/stores/dialogs";
-import { Nunito } from "next/font/google";
-import { Delete } from "@/app/actions/serverActions";
-import { toast } from 'react-toastify';
-import { useQueryClient } from '@tanstack/react-query';
-//COMPONENTS
 import YtPlayer from "@/components/YtPlayer";
 import { like } from "@/app/actions/serverActions";
 import Clipboard from "@/components/Clipboard";
 import CardHeader from "@/components/CardHeader";
-import BasicSkeleton from "@/components/BasicSkeleton";
 import RelativeTime from "@/components/RelativeTime";
 //TYPES IMPORT
 import type { Publication } from "@/lib/types/publication";
 //GLOBAL VARS
-const ComentariesBox = dynamic(() => import("@/components/ComentariesBox"), {
-  loading: () => <BasicSkeleton />,
-});
 const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
 const vip = 'vipPub';
 const normal = 'overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100';
@@ -42,7 +39,7 @@ export default function Pub({ info }: Props) {
   //HOOKS
   const { data: session } = useSession();
   const queryClient = useQueryClient();
-  const [comment, setComment] = useState(false);
+  const { setData: setComments, clearData: clearComments, comments } = useCommentsBox();
   const [opts, setOpts] = useState(false);
   const [delLoader, setDelLoader] = useState(false);
   const [likes, setLikes] = useState(info.likes.length);
@@ -98,6 +95,9 @@ export default function Pub({ info }: Props) {
         </div>
       );
     }
+  }
+  function handleCommentsBox() {
+    
   }
   return (
     <article
@@ -220,7 +220,7 @@ export default function Pub({ info }: Props) {
         <div className="flex gap-3">
           <FaRegComment
             onClick={() => {
-              setComment(!comment);
+              comments.length > 0 ? clearComments() : setComments(info.comments, info._id.toString())
             }}
             color="#fef9c3"
             size={20}
@@ -229,9 +229,6 @@ export default function Pub({ info }: Props) {
           <p className="font-bold text-yellow-100">{info?.comments?.length}</p>
         </div>
       </div>
-      {comment && (
-        <ComentariesBox comments={info.comments} pubId={info._id.toString()} />
-      )}
     </article>
   );
 }

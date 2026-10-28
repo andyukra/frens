@@ -113,3 +113,16 @@ body {
     background-position: 0% 50%;
   }
 }
+
+.fade-in-entry {
+  animation: fadeInEffect 0.1s ease-out forwards;
+}
+
+@keyframes fadeInEffect {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

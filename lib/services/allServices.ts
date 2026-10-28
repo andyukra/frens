@@ -6,6 +6,7 @@ import { verifyToken } from "./verifToken";
 import { webPushNotif } from "./webPushService";
 import S3factory from "@/lib/adapters/server/S3/S3factoryServer";
 import DbFactory from "@/lib/adapters/server/db/dbFactory";
+import { cacheLife, cacheTag, unstable_cache } from "next/cache";
 //TYPES
 import {
   ResponseComment,
@@ -13,10 +14,14 @@ import {
   ResponsePub,
   ResponseSignature,
   ResponseGeneric,
+  ResponseAvatars,
+  ResponseGetPub,
+  ResponseExtras
 } from "@/lib/types/response";
 //********************** I N I T ****************************
 //SERVICES
 export default {
+  //************* M U T A T I O N S *****************
   async like(id: string): Promise<ResponseGeneric> {
     // 1. Verificar autenticación directamente en el servidor por seguridad
     const session = await auth();
@@ -62,9 +67,8 @@ export default {
     //POST COMMENT
     try {
       //GET AVATAR AND USERNAME
-      const { image: avatar, name } = await dbAdapter.getUserAvatarUsernameAndPubsPerDay(
-        user.email,
-      );
+      const { image: avatar, name } =
+        await dbAdapter.getUserAvatarUsernameAndPubsPerDay(user.email);
       const Comment = {
         pubId: id,
         author: name,
@@ -98,8 +102,11 @@ export default {
     const dbAdapter = DbFactory(process.env.DB_TYPE);
     //GET USER DATA FROM DB
     try {
-      const { image: avatar, name, pubcountperday } =
-        await dbAdapter.getUserAvatarUsernameAndPubsPerDay(user.email);
+      const {
+        image: avatar,
+        name,
+        pubcountperday,
+      } = await dbAdapter.getUserAvatarUsernameAndPubsPerDay(user.email);
       //CHECK PUBS PER DAY LIMIT
       if (pubcountperday <= 0)
         return {
@@ -201,9 +208,8 @@ export default {
     //GET DB ADAPTER AND GET PUBCOUNTPERDAY
     const dbAdapter = DbFactory(process.env.DB_TYPE);
     try {
-      const { pubcountperday } = await dbAdapter.getUserAvatarUsernameAndPubsPerDay(
-        user.email,
-      );
+      const { pubcountperday } =
+        await dbAdapter.getUserAvatarUsernameAndPubsPerDay(user.email);
       //CHECK PUBS PER DAY FOR THIS USER
       if (pubcountperday <= 0)
         return { errors: "Has alcanzado la cuota diaria de publicaciones" };
@@ -244,6 +250,7 @@ export default {
       return { errors: "Error al eliminar favorito" };
     }
   },
+  //************* G E T T E R S *****************
   async getFavourites(): Promise<ResponseGeneric> {
     const { user } = await auth();
     if (!user) return { errors: "Sin autorización" };
@@ -258,4 +265,85 @@ export default {
       return { errors: "Error al obtener favoritos" };
     }
   },
+  async getAvatars(limit: number): Promise<ResponseAvatars> {
+    "use cache: remote";
+
+    cacheLife("days");
+    cacheTag("avatarsCarrousel");
+
+    const dbAdapter = DbFactory(process.env.DB_TYPE);
+    try {
+      const avatars = await dbAdapter.getAvatars(limit);
+      return { message: avatars };
+    } catch (error) {
+      return { errors: error };
+    }
+  },
+  async getUncacheableData(
+    page: number,
+    search: string,
+    author: string,
+    docsPerPage: number,
+  ): Promise<ResponseGeneric> {
+    const skip = (page - 1) * docsPerPage;
+    const dbAdapter = DbFactory(process.env.DB_TYPE);
+    try {
+      const pubs = await dbAdapter.getPubs({
+        docsPerPage,
+        search,
+        author,
+        skip,
+      });
+      return { message: pubs };
+    } catch (error) {
+      return { errors: error };
+    }
+  },
+  async getCacheableData(
+    page: number,
+    docsPerPage: number,
+  ): Promise<ResponseGeneric> {
+    "use cache: remote";
+
+    //CACHE CONFIG
+    cacheLife("days");
+    cacheTag(`pubsPage-${page}`);
+
+    const skip = (page - 1) * docsPerPage;
+    const dbAdapter = DbFactory(process.env.DB_TYPE);
+
+    try {
+      const pubs = await dbAdapter.getPubs({ docsPerPage, skip });
+      return { message: pubs };
+    } catch (error) {
+      return { errors: error };
+    }
+  },
+  async getPub(id: string): Promise<ResponseGetPub> {
+    const dbAdapter = DbFactory(process.env.DB_TYPE);
+    try {
+      const pub = await dbAdapter.getPub(id);
+      return { message: pub };
+    } catch (error) {
+      return {
+        errors:
+          error instanceof Error
+            ? error.message
+            : "Error al obtener la publicación",
+      };
+    }
+  },
+  getExtras: unstable_cache(
+    async (amount = 10): Promise<ResponseExtras> => {
+      const dbAdapter = DbFactory(process.env.DB_TYPE);
+      try {
+        const extras = await dbAdapter.getExtras(amount);
+        return { message: extras };
+      } catch (error) {
+        return { errors: error };
+      }
+    },
+    ["extras"], // clave única de caché
+    { revalidate: 3600 }, // revalida cada 3600 segundos (1 hora)
+  ),
 };

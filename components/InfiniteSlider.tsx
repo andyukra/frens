@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getExtras } from "@/lib/dbConsults";
 
 export default async () => {
-  const { message, errors } = await getExtras(10);
+  const { message, errors } = await getExtras();
   if (errors) return;
   // Duplicate images for seamless loop
   const duplicatedImages = [...message, ...message];

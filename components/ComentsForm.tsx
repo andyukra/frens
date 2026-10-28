@@ -8,12 +8,14 @@ import {
   ChangeEvent,
   useTransition,
 } from "react";
+import { useCommentsBox } from "@/lib/stores/dialogs";
 import { useSession } from "next-auth/react";
 import { Turnstile } from "nextjs-turnstile";
 import { upComment } from "@/app/actions/serverActions";
 import { ResponseComment } from "@/lib/types/response";
 import { toast } from 'react-toastify';
 import S3factory from '@/lib/adapters/client/S3/S3factoryClient';
+import { useQueryClient } from '@tanstack/react-query';
 //TYPES
 type Props = {
   pubId: string;
@@ -25,6 +27,8 @@ let initState: ResponseComment = {};
 export default function ComentsForm({ pubId, cb }: Props) {
   //HOOKS
   const { status } = useSession();
+  const { clearData: clearComments } = useCommentsBox();
+  const queryClient = useQueryClient();
   const [isUploadingS3, setIsUploadingS3] =
     useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
@@ -41,7 +45,9 @@ export default function ComentsForm({ pubId, cb }: Props) {
     }
     if (state?.message) {
       cb(state.message);
+      clearComments();
       toast.success("Comentario publicado!");
+      queryClient.invalidateQueries({ queryKey: ['pubs'] });
     }
   }, [state]);
   //HANDLERS
