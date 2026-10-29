@@ -1,10 +1,17 @@
 "use client";
 import { FaTimes } from "react-icons/fa";
 import { useImageViewer } from "@/lib/stores/dialogs";
-
+import { useEffect } from 'react';
 //MAIN FC
 export default function ImageViewer() {
   const { url, alt, clearData } = useImageViewer();
+  useEffect(() => {
+    if(url) {
+      document.body.style.position = 'fixed';
+    } else {
+      document.body.style.position = 'static';
+    }
+  }, [url]);
   return (
     <>
       {url && alt && (

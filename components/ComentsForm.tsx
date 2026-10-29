@@ -90,18 +90,21 @@ export default function ComentsForm({ pubId, cb }: Props) {
           className="w-full flex gap-4 items-center pt-2"
         >
           {!token ? (
-            <Turnstile
-              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-              onSuccess={(tok) => {
-                tokenRef.current = tok;
-                setToken(tok);
-              }}
-              onError={() => console.error("Error en Turnstile")}
-              onExpire={() => {
-                tokenRef.current = "";
-                setToken("");
-              }}
-            />
+            <div className="w-full flex items-center justify-center">
+              <FaSpinner size={35} className="animate-spin"/>
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                onSuccess={(tok) => {
+                  tokenRef.current = tok;
+                  setToken(tok);
+                }}
+                onError={() => console.error("Error en Turnstile")}
+                onExpire={() => {
+                  tokenRef.current = "";
+                  setToken("");
+                }}
+              />
+            </div>
           ) : (
             <>
               <input type="text" defaultValue={pubId} hidden name="id" />
