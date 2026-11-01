@@ -2,18 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary: #ff00ff85;
-  --secondary: #0010ff63;
-  --tertiary: #fb3ce5;
-}
-
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(2, 19, 22);
+  background: linear-gradient(to bottom, var(--primary), var(--secondary));
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-track {
@@ -25,16 +19,20 @@
   display: none;
 }
 
-audio::-webkit-media-controls-play-button, audio::-webkit-media-controls-mute-button, audio::-webkit-media-controls-timeline, audio::-webkit-media-controls-volume-slider {
-    filter: invert(100%);
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-mute-button,
+audio::-webkit-media-controls-timeline,
+audio::-webkit-media-controls-volume-slider {
+  filter: invert(100%);
 }
-audio::-webkit-media-controls-current-time-display, audio::-webkit-media-controls-time-remaining-display {
-    color: white;
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+  color: white;
 }
 audio::-webkit-media-controls-enclosure {
-    corner-shape: squircle;
-    border-radius: 1rem;
-    background-color: #000;
+  corner-shape: squircle;
+  border-radius: 1rem;
+  background-color: #000;
 }
 
 .scrollLess::-webkit-scrollbar {
@@ -47,13 +45,12 @@ audio::-webkit-media-controls-enclosure {
 }
 .vipPub {
   backdrop-filter: none !important;
-  background: #000;
   position: relative;
   box-shadow: none;
   outline: none;
 }
 .vipPub::before {
-  content: '';
+  content: "";
   z-index: -5;
   corner-shape: squircle;
   border-radius: 1rem;
@@ -64,17 +61,35 @@ audio::-webkit-media-controls-enclosure {
   animation: vipPubAnimate 2.5s ease infinite;
 }
 
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: #383838;
   font-size: 1rem;
 }
 
 body {
-  color: #fff;
   min-height: 100dvh;
   max-width: 100vw;
-  background-attachment: fixed;
-  background-image: url('/bg.webp');
+  background: var(--paper);
+}
+
+:root {
+  --primary: #FA7268;
+  --secondary: #C62368;
+  --tertiary: #123;
+  --primaryTextLight: #222;
+  --secondaryTextLight: #444;
+  --paper: #FAF9F6;
+}
+
+.brand {
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  color: transparent;
+  background-clip: text;
+}
+
+.gradient {
+  background: linear-gradient(to right, var(--primary), var(--secondary));
 }
 
 #bgVideo {

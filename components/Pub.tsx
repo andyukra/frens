@@ -31,7 +31,9 @@ import type { Publication } from "@/lib/types/publication";
 //GLOBAL VARS
 const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
 const vip = 'vipPub';
-const normal = 'overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100';
+const normal = 'overflow-hidden bg-[white] backdrop-blur-sm';
+const primaryTextLight = '#444';
+const secondaryTextLight = '#222';
 //TYPES
 type Props = { info: Publication };
 //MAIN FC
@@ -81,7 +83,7 @@ export default function Pub({ info }: Props) {
   }
   function detectImg(txt: string) {
     if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
-      return <p className="mt-2 rounded-lg font-bold text-white">{txt}</p>;
+      return <p className="mt-2 rounded-lg font-bold text-[var(--secondaryTextLight)]">{txt}</p>;
     } else {
       return (
         <div className="w-full">
@@ -96,16 +98,13 @@ export default function Pub({ info }: Props) {
       );
     }
   }
-  function handleCommentsBox() {
-    
-  }
   return (
     <article
       //@ts-ignore
       style={{ cornerShape: "squircle", borderRadius: "1rem" }}
-      className={`mb-3 inline-block w-full ${info.vip ? vip : normal}`}
+      className={`mb-3 inline-block w-full ${info.vip ? vip : normal} shadow-lg`}
     >
-      <div className="flex items-center justify-between py-2 pl-2 pr-4 border-b-[2px] border-solid border-yellow-100">
+      <div className="flex items-center justify-between py-2 pl-2 pr-4">
         <CardHeader pub={info} pubDate={<RelativeTime date={info.date} />} />
         {/* ACTIONS */}
         <div className="relative">
@@ -147,7 +146,7 @@ export default function Pub({ info }: Props) {
           )}
           <FaEllipsis
             onClick={() => setOpts(!opts)}
-            color="#fef9c3"
+            color="black"
             size={25}
             className="cursor-pointer"
           />
@@ -158,7 +157,7 @@ export default function Pub({ info }: Props) {
           <h2
             //@ts-ignore
             style={{ cornerShape: "squircle", borderRadius: "0.5rem" }}
-            className={`${nunito.className} font-[900] text-yellow-300 text-xl p-2 bg-[#000] ring-2 ring-yellow-300`}
+            className={`${nunito.className} font-[900] text-[var(--primaryTextLight)] text-xl`}
           >
             {info.title}
           </h2>
@@ -188,7 +187,7 @@ export default function Pub({ info }: Props) {
         )}
       </div>
       {/* SOCIAL ACTIONS */}
-      <div className="flex items-center justify-around py-3 rounded-b-lg border-t-[2px] border-solid border-yellow-100">
+      <div className="flex items-center justify-around py-3 rounded-b-lg">
         <div className="flex gap-3">
           <FaRegThumbsUp
             onClick={async () => {
@@ -201,32 +200,32 @@ export default function Pub({ info }: Props) {
                 setLikesDissable(true);
               }
             }}
-            color="#fef9c3"
+            color={secondaryTextLight}
             size={20}
             className={`cursor-pointer hover:animate-pulse ${
               likesDissable ? "pointer-events-none" : ""
             }`}
           />
-          <p className="font-bold text-yellow-100">{likes}</p>
+          <p className="font-bold text-[var(--secondaryTextLight)]">{likes}</p>
         </div>
         <div className="flex gap-3">
           <FaRegStar
-            color="#fef9c3"
+            color={secondaryTextLight}
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold text-yellow-100">0</p>
+          <p className="font-bold text-[var(--secondaryTextLight)]">0</p>
         </div>
         <div className="flex gap-3">
           <FaRegComment
             onClick={() => {
               comments.length > 0 ? clearComments() : setComments(info.comments, info._id.toString())
             }}
-            color="#fef9c3"
+            color={secondaryTextLight}
             size={20}
             className="cursor-pointer hover:animate-pulse"
           />
-          <p className="font-bold text-yellow-100">{info?.comments?.length}</p>
+          <p className="font-bold text-[var(--secondaryTextLight)]">{info?.comments?.length}</p>
         </div>
       </div>
     </article>

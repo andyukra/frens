@@ -87,7 +87,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
       {status == "authenticated" && (
         <form
           onSubmit={handleSubmit}
-          className="w-full flex gap-4 items-center pt-2"
+          className="w-[97%] mx-auto flex gap-4 items-center pt-2"
         >
           {!token ? (
             <div className="w-full flex items-center justify-center">
@@ -115,8 +115,9 @@ export default function ComentsForm({ pubId, cb }: Props) {
                   name="comment"
                   maxLength={500}
                   minLength={1}
-                  className={`bg-white w-full py-2 px-4 rounded-lg focus:outline-none text-black`}
+                  className={`bg-slate-300 w-full py-2 px-4 rounded-lg focus:outline-none text-black`}
                   disabled={!token || !!file}
+                  autoComplete="off"
                 />
                 <input
                   disabled={!token}
@@ -128,19 +129,17 @@ export default function ComentsForm({ pubId, cb }: Props) {
                 />
               </div>
 
-              {isLoading ? (
-                <FaSpinner className="animate-spin text-white" size={20} />
-              ) : (
+              {!isLoading && (
                 <>
                   <label htmlFor={pubId} className="">
                     <FaImage
-                      className={`${!!file ? "text-orange-600 animate-bounce" : "text-white"} cursor-pointer size-5`}
+                      className={`${!!file ? "text-orange-600 animate-bounce" : "text-[var(--secondaryTextLight)]"} cursor-pointer size-5`}
                     />
                   </label>
                   <button disabled={!token}>
                     <FaPaperPlane
                       size={20}
-                      className="cursor-pointer hover:animate-pulse text-white"
+                      className="cursor-pointer hover:animate-pulse text-[var(--secondaryTextLight)]"
                     />
                   </button>
                 </>

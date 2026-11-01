@@ -18,5 +18,5 @@ export default function RelativeTime({
     setText(moment(date).fromNow());
   }, [date]);
 
-  return <p className="text-sm text-yellow-100">{text || ""}</p>;
+  return <p className="text-sm text-[var(--secondaryTextLight)]">{text || ""}</p>;
 }

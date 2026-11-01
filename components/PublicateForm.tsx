@@ -88,7 +88,7 @@ export default function PublicateForm({ type }:Props) {
       onSubmit={handleSubmit}
       //@ts-ignore
       style={{cornerShape: 'squircle', borderRadius: '1rem'}}
-      className="p-5 bg-[#000d] backdrop-blur-sm ring-4 text-white ring-yellow-100 flex flex-col justify-center items-center gap-5 md:w-6/12 w-full"
+      className="p-5 bg-[#000d] text-whit  flex flex-col justify-center items-center gap-5 md:w-6/12 w-full"
     >
       <input type="text" defaultValue={type} hidden name="type"/>
       <hr />
@@ -114,7 +114,7 @@ export default function PublicateForm({ type }:Props) {
             ) : (
               <FaImage color={"white"} size={100} />
             )}
-            <p className="mt-2 font-bold">Elegir imágen (4.5 MB màximo)</p>
+            <p className="mt-2 text-white font-bold">Elegir imágen (4.5 MB màximo)</p>
           </label>
         </>
       )}
@@ -123,7 +123,7 @@ export default function PublicateForm({ type }:Props) {
         maxLength={50}
         minLength={1}
         name="title"
-        className={`bg-yellow-100 w-full px-4 py-2 text-slate-950 focus:outline-none`}
+        className={`w-full px-4 py-2 text-slate-950 focus:outline-none`}
         type="text"
         placeholder="Título"
         //@ts-ignore
@@ -132,7 +132,7 @@ export default function PublicateForm({ type }:Props) {
       {type === "video" && (
         <>
           <input
-            className="bg-yellow-100 rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none"
+            className="rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none"
             type="url"
             required
             minLength={1}
@@ -150,7 +150,7 @@ export default function PublicateForm({ type }:Props) {
           minLength={1}
           //@ts-ignore
           style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
-          className={`bg-yellow-100 resize-none w-full px-4 py-2 text-slate-950 focus:outline-none`}
+          className={`resize-none w-full px-4 py-2 text-slate-950 focus:outline-none`}
           rows={3}
           name="description"
           placeholder="Descripción"

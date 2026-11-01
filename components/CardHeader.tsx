@@ -1,11 +1,10 @@
-import React from "react";
 
 type Data = { avatar: string , author: string };
 type Props = { pub: Data, pubDate: React.ReactNode }
 
-export default function CardHeader({pub, pubDate}) {
+export default function CardHeader({pub, pubDate}: Props) {
   return (
-    <div className="flex justify-between items-center text-yellow-100">
+    <div className="flex justify-between items-center text-[var(--primaryTextLight)]">
       <div className="flex gap-3 items-center">
         <img
           src={pub.avatar}

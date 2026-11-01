@@ -53,9 +53,10 @@ export default async () => {
       <div 
 	  	//@ts-ignore
         style={{ cornerShape: "squircle", borderRadius: "1.2rem" }}
-		className="w-full flex-col bg-black relative overflow-hidden flex items-center justify-center">
+		className="w-full flex-col relative overflow-hidden flex items-center justify-center">
+      <h1 className="brand font-bold text-3xl w-full p-2 text-center">Los más visitados</h1>
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black z-0" />
+        <div className="absolute inset-0 z-0" />
         {/* Scrolling images container */}
         <div className="relative z-10 w-full flex items-center justify-center py-8">
           <div className="scroll-container w-[90%]">
@@ -79,7 +80,7 @@ export default async () => {
         </div>
 
         {/* Bottom gradient overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent z-20" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 z-20" />
       </div>
     </>
   );

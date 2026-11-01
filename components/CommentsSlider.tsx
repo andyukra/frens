@@ -27,7 +27,7 @@ export default function CommentsSlider() {
           <div 
             //@ts-ignore
             style={{cornerShape: 'squircle', borderTopRightRadius: '3rem', borderTopLeftRadius: '3rem'}}
-            className="fade-in-entry absolute md:w-[50%] w-[100%] md:h-[70%] h-[70%] bottom-0 bg-slate-950 p-4">
+            className="fade-in-entry absolute md:w-[50%] w-[100%] md:h-[70%] h-[70%] bottom-0 bg-[var(--paper)] p-4">
             <button onClick={() => clearData()}>
               <FaTimes
                 color="gray"

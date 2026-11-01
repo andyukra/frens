@@ -30,7 +30,7 @@ function filterMsg(msg: string, setData: (url: string, alt: string) => void) {
     );
   } else {
     return (
-      <p className="p-3 font-bold rounded-lg bg-yellow-100 text-black break-word">{msg}</p>
+      <p className="p-3 font-bold rounded-lg text-[var(--secondaryTextLight)] bg-slate-200 break-word">{msg}</p>
     );
   }
 }

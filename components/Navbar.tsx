@@ -33,10 +33,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className="h-[64px] z-[100] flex items-center lg:px-20 px-4 justify-between bg-black shadow-md"
+      className="h-[64px] z-[100] flex items-center lg:px-20 px-4 justify-between gradient shadow-lg"
     >     
       <Link href="/home?page=1" className={`${lobster.className} flex items-center gap-4`}>
-        <h1 className="text-2xl font-bold text-white text-shadow">frens</h1>
+        <h1 className="text-2xl font-bold text-white">frens</h1>
       </Link>
       {pathname === "/home" && <Searcher />}
       {status === 'authenticated' ? (

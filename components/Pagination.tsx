@@ -35,20 +35,20 @@ export default function Pagination({ total, docs }: Props) {
     });
   }
   return (
-    <div className="flex mb-5 flex-wrap px-2 justify-center items-center">
+    <div className="flex flex-wrap px-2 justify-center items-center text-white">
       <div
         style={{ transition: "0.3s" }}
-        className="shadow-md bg-black rounded-l-lg p-5 cursor-pointer"
+        className="shadow-md gradient rounded-l-lg p-5 cursor-pointer"
         onClick={() => prev()}
       >
         <FaAngleLeft />
       </div>
-      <div className="bg-black font-bold rounded-md p-5 pointer-events-none border-x-2 border-solid border-white">
+      <div className="gradient font-bold rounded-md p-5 pointer-events-none border-x-2 border-solid border-white">
         {current}
       </div>
       <div
         style={{ transition: "0.3s" }}
-        className="shadow-md bg-black rounded-r-lg p-5 cursor-pointer"
+        className="shadow-md gradient rounded-r-lg p-5 cursor-pointer"
         onClick={() => next()}
       >
         <FaAngleRight />
