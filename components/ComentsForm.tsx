@@ -13,9 +13,9 @@ import { useSession } from "next-auth/react";
 import { Turnstile } from "nextjs-turnstile";
 import { upComment } from "@/app/actions/serverActions";
 import { ResponseComment } from "@/lib/types/response";
-import { toast } from 'react-toastify';
-import S3factory from '@/lib/adapters/client/S3/S3factoryClient';
-import { useQueryClient } from '@tanstack/react-query';
+import { toast } from "react-toastify";
+import S3factory from "@/lib/adapters/client/S3/S3factoryClient";
+import { useQueryClient } from "@tanstack/react-query";
 //TYPES
 type Props = {
   pubId: string;
@@ -29,8 +29,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
   const { status } = useSession();
   const { clearData: clearComments } = useCommentsBox();
   const queryClient = useQueryClient();
-  const [isUploadingS3, setIsUploadingS3] =
-    useState<boolean>(false);
+  const [isUploadingS3, setIsUploadingS3] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [state, formAction, isPending] = useActionState(upComment, initState);
   const [isPendingTransition, startTransition] = useTransition();
@@ -47,7 +46,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
       cb(state.message);
       clearComments();
       toast.success("Comentario publicado!");
-      queryClient.invalidateQueries({ queryKey: ['pubs'] });
+      queryClient.invalidateQueries({ queryKey: ["pubs"] });
     }
   }, [state]);
   //HANDLERS
@@ -89,63 +88,59 @@ export default function ComentsForm({ pubId, cb }: Props) {
           onSubmit={handleSubmit}
           className="w-[97%] mx-auto flex gap-4 items-center pt-2"
         >
-          {!token ? (
-            <div className="w-full flex items-center justify-center">
-              <FaSpinner size={35} className="animate-spin"/>
-              <Turnstile
-                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                onSuccess={(tok) => {
-                  tokenRef.current = tok;
-                  setToken(tok);
-                }}
-                onError={() => console.error("Error en Turnstile")}
-                onExpire={() => {
-                  tokenRef.current = "";
-                  setToken("");
-                }}
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+            onSuccess={(tok) => {
+              tokenRef.current = tok;
+              setToken(tok);
+            }}
+            onError={() => console.error("Error en Turnstile")}
+            onExpire={() => {
+              tokenRef.current = "";
+              setToken("");
+            }}
+          />
+          <>
+            <input type="text" defaultValue={pubId} hidden name="id" />
+            <div className="commentBX w-full flex justify-between items-center gap-3">
+              <input
+                type="text"
+                placeholder="Escribe un comentario"
+                name="comment"
+                maxLength={500}
+                minLength={1}
+                className={`bg-slate-300 w-full py-2 px-4 rounded-lg focus:outline-none text-black`}
+                disabled={!token || !!file}
+                autoComplete="off"
+              />
+              <input
+                disabled={!token}
+                type="file"
+                id={pubId}
+                hidden
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files[0] || null)}
               />
             </div>
-          ) : (
-            <>
-              <input type="text" defaultValue={pubId} hidden name="id" />
-              <div className="commentBX w-full flex justify-between items-center gap-3">
-                <input
-                  type="text"
-                  placeholder="Escribe un comentario"
-                  name="comment"
-                  maxLength={500}
-                  minLength={1}
-                  className={`bg-slate-300 w-full py-2 px-4 rounded-lg focus:outline-none text-black`}
-                  disabled={!token || !!file}
-                  autoComplete="off"
-                />
-                <input
-                  disabled={!token}
-                  type="file"
-                  id={pubId}
-                  hidden
-                  accept="image/*"
-                  onChange={(e) => setFile(e.target.files[0] || null)}
-                />
-              </div>
 
-              {!isLoading && (
-                <>
-                  <label htmlFor={pubId} className="">
-                    <FaImage
-                      className={`${!!file ? "text-orange-600 animate-bounce" : "text-[var(--secondaryTextLight)]"} cursor-pointer size-5`}
-                    />
-                  </label>
-                  <button disabled={!token}>
-                    <FaPaperPlane
-                      size={20}
-                      className="cursor-pointer hover:animate-pulse text-[var(--secondaryTextLight)]"
-                    />
-                  </button>
-                </>
-              )}
-            </>
-          )}
+            {isLoading ? (
+              <FaSpinner color="black" size={30} className="animate-spin" />
+            ) : (
+              <>
+                <label htmlFor={pubId} className="">
+                  <FaImage
+                    className={`${!!file ? "text-orange-600 animate-bounce" : "text-[var(--secondaryTextLight)]"} cursor-pointer size-5`}
+                  />
+                </label>
+                <button disabled={!token}>
+                  <FaPaperPlane
+                    size={20}
+                    className="cursor-pointer hover:animate-pulse text-[var(--secondaryTextLight)]"
+                  />
+                </button>
+              </>
+            )}
+          </>
         </form>
       )}
     </>

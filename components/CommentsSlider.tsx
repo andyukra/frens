@@ -1,21 +1,27 @@
 "use client";
 
 import { useCommentsBox } from "@/lib/stores/dialogs";
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 //COMPONENTS AND UI
 import { FaTimes } from "react-icons/fa";
 import Comentary from "@/components/Comentary";
 import ComentsForm from "@/components/ComentsForm";
 
+let scrollY: number = 0;
+
 export default function CommentsSlider() {
   //HOOKS
   const { comments, pubId, clearData } = useCommentsBox();
   //FIX SCROLL ON COMMENTS VIEW
-  useEffect(() => {
+  useLayoutEffect(() => {
     if(pubId) {
+      scrollY = window.scrollY;
       document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
     } else {
-      document.body.style.position = 'static';
+      document.body.style.position = '';
+      window.scrollTo(0, scrollY);
+      scrollY = 0;
     }
   }, [pubId])
   //RENDER
@@ -39,7 +45,7 @@ export default function CommentsSlider() {
             <div className="overflow-auto h-full pb-6 mt-2 flex flex-col justify-between">
               {comments.length === 0 ? (
                 <div className="flex h-full items-center justify-center">
-                  <h4 className="text-center text-lg font-medium text-yellow-100">
+                  <h4 className="text-center text-lg font-medium">
                     No hay comentarios
                   </h4>
                 </div>

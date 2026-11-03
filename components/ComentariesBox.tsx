@@ -39,7 +39,7 @@ export default function ComentariesBox({ comments, pubId }:Props) {
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {commentaries.length === 0 ? (
           <div className="flex h-full items-center justify-center">
-            <h4 className="text-center text-lg font-medium text-yellow-100">
+            <h4 className="text-center text-lg font-medium">
               No hay comentarios
             </h4>
           </div>
@@ -56,7 +56,7 @@ export default function ComentariesBox({ comments, pubId }:Props) {
       </div>
 
       {/* FORM */}
-      <div className="border-t-2 border-yellow-100 p-4">
+      <div className="p-4">
         <ComentsForm
           pubId={pubId}
           cb={addComment}

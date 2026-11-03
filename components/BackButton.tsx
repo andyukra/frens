@@ -18,10 +18,10 @@ export default function BackButton() {
 
   return (
     <button
-      className="inline-flex items-center gap-2 rounded-lg p-2 ring-2 bg-[#0008] ring-yellow-200 backdrop-blur-sm text-white"
+      className="inline-flex items-center gap-2 rounded-lg p-2 bg-white shadow"
       onClick={() => router.back()}
     >
-      <FaArrowLeft size={20} color="white" />
+      <FaArrowLeft size={20} color="black" />
       <span className="font-medium">Volver</span>
     </button>
   );

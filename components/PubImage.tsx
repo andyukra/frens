@@ -19,7 +19,7 @@ export default function PubImage({ image, title }: Props) {
         style={{ cornerShape: "squircle", borderRadius: "1rem" }}
         src={image}
         alt={title}
-        className="max-h-[650px] w-auto mx-auto object-contain ring-2 ring-yellow-100"
+        className="max-h-[650px] w-auto mx-auto object-contain"
       />
     </button>
   );

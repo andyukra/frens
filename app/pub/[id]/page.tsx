@@ -17,7 +17,7 @@ import type { Publication } from '@/lib/types/publication';
 moment.locale("es");
 const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
 const vip = 'vipPub';
-const normal = 'overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100';
+const normal = 'overflow-hidden shadow-xl';
 //COMPONENTS
 function Empty() {
   return (
@@ -75,7 +75,7 @@ async function Publication({ params }) {
               <h1
                 //@ts-ignore
                 style={{cornerShape: 'squircle', borderRadius: '0.8rem'}}
-                className={`${nunito.className} text-center text-xl font-[900] text-yellow-300 p-2 bg-[#000] ring-2 ring-yellow-300`}
+                className={`${nunito.className} text-center text-xl font-[900]`}
               >
                 {message.title}
               </h1>
@@ -110,8 +110,8 @@ async function Publication({ params }) {
 
             {/* DESCRIPTION */}
             {message.description && (
-              <div className="border-t-2 border-yellow-100 px-5 py-5">
-                <p className="whitespace-pre-wrap leading-7 text-white">
+              <div className="px-5 py-5">
+                <p className="whitespace-pre-wrap leading-7">
                   {message.description}
                 </p>
               </div>
@@ -125,11 +125,11 @@ async function Publication({ params }) {
           <article 
             //@ts-ignore
             style={{cornerShape: 'squircle', borderRadius: '1.5rem'}}
-            className="flex max-h-[calc(100dvh-2rem)] min-h-[500px] flex-col overflow-hidden bg-[#000d] backdrop-blur-sm ring-4 ring-yellow-100"
+            className="flex max-h-[calc(100dvh-2rem)] min-h-[500px] flex-col shadow-xl overflow-hidden"
           >
 
-            <header className="border-b-2 border-yellow-100 p-5">
-              <h2 className="text-xl font-bold text-yellow-100">
+            <header className="p-5">
+              <h2 className="text-xl font-bold">
                 Comentarios
               </h2>
             </header>
