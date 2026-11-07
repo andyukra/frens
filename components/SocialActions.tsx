@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useCommentsBox } from "@/lib/stores/dialogs";
 import { Comment } from "@/lib/types/comment";
 import { toast } from "react-toastify";
-import { addFavourite } from "@/app/actions/serverActions";
+import { addFavourite, delFavourite } from "@/app/actions/serverActions";
 import { like } from "@/app/actions/serverActions";
 import { useMutation } from '@tanstack/react-query';
 //UI
@@ -42,14 +42,24 @@ export default function SocialActions({
       setLikes((prev) => prev + 1)
       setIsLiked(true);
     },
-    onError: err => {
-      toast.info(err.message);
+    onError: () => {
       setLikes((prev) => prev - 1)
       setIsLiked(false);
     },
     onSettled: () => { setDisabledLikes(true); }
   });
-  const { mutate: mutateFav } = useMutation({
+  const { mutate: mutateDelFav } = useMutation({
+    mutationFn: async () => delFavourite(PubId),
+    onMutate: () => {
+      const conf = confirm("Quieres quitar este post de tus favoritos?");
+      if(!conf) throw new Error("");
+      setFavourites(prev => prev - 1);
+    },
+    onSuccess: () => {
+      toast.success("Favorito eliminado exitosamente");
+    }
+  });
+  const { mutate: mutateAddFav } = useMutation({
     mutationFn: async () => {
       const res = await addFavourite(PubId);
       if(res.errors) throw new Error(res.errors);
@@ -58,14 +68,17 @@ export default function SocialActions({
       setFavourites((prev) => prev + 1)
       setIsFavourited(true);
     },
-    onError: err => {
-      toast.info(err.message);
-      setFavourites((prev) => prev - 1)
+    onError: async err => {
+      if(err.message === "exists") {
+        mutateDelFav();
+      }
+      setFavourites((prev) => prev - 1);
       setIsFavourited(false);
     },
     onSuccess: () => { toast.success("Has agregado un nuevo favorito!") },
     onSettled: () => { setDisabledFavourites(true); }
   });
+  
   //RENDER
   return (
     <div className="flex items-center justify-around py-3 rounded-b-lg">
@@ -98,7 +111,7 @@ export default function SocialActions({
           }`}
           onClick={async () => {
             if(!isAuth) return;
-            mutateFav();
+            mutateAddFav();
           }}
         />
         <p className={`font-bold ${isFavourited ? "text-[var(--secondary)]" : 'text-["#222"]'}`}>{favourites}</p>

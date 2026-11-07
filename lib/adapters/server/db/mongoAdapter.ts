@@ -103,7 +103,7 @@ export default function (): DbAdapter {
           //VERIF DUPLICATED FAVOURITES
           const existsPub = user.favourites.some((fav: string) => fav == pubId);
           if (existsPub)
-            throw new Error("Ya tienes esa publicación en tus favoritos");
+            throw new Error("exists");
           //ADD FAVOURITE TO USER
           await UserModel.updateOne(
             { name: username },
