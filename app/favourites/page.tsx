@@ -3,6 +3,8 @@ import { Publication } from "@/lib/types/publication";
 //UI
 import Pub from "@/components/Pub";
 
+export const instant = false;
+
 export default async function Favourites() {
   const { message, errors } = await getFavourites();
 
