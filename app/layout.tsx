@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
               pauseOnFocusLoss
               draggable
               pauseOnHover
-              theme="colored"
+              theme="light"
               transition={Bounce}
             />
             <ImageViewer />

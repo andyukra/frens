@@ -8,7 +8,7 @@ export type Publication = {
   comments: Comment[],
   date: Date,
   description: string,
-  favourite: any[],
+  favourite: number,
   image: string,
   likes: Like[],
   title: string,

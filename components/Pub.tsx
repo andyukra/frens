@@ -4,36 +4,30 @@ import Link from "next/link";
 //@ts-ignore
 import { Nunito } from "next/font/google";
 import { Delete } from "@/app/actions/serverActions";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 //HOOKS
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from "@tanstack/react-query";
 import { useImageViewer } from "@/lib/stores/dialogs";
-import { useCommentsBox } from '@/lib/stores/dialogs';
 //COMPONENTS AND UI
 import {
   FaEllipsis,
-  FaRegThumbsUp,
-  FaRegStar,
-  FaRegComment,
   FaSpinner,
   FaArrowRightFromBracket,
   FaDeleteLeft,
 } from "react-icons/fa6";
 import YtPlayer from "@/components/YtPlayer";
-import { like } from "@/app/actions/serverActions";
 import Clipboard from "@/components/Clipboard";
 import CardHeader from "@/components/CardHeader";
 import RelativeTime from "@/components/RelativeTime";
+import SocialActions from "@/components/SocialActions";
 //TYPES IMPORT
 import type { Publication } from "@/lib/types/publication";
 //GLOBAL VARS
 const nunito = Nunito({ subsets: ["latin"], weight: ["900", "800"] });
-const vip = 'vipPub';
-const normal = 'overflow-hidden bg-[white] backdrop-blur-sm';
-const primaryTextLight = '#444';
-const secondaryTextLight = '#222';
+const vip = "vipPub";
+const normal = "overflow-hidden bg-[white] backdrop-blur-sm";
 //TYPES
 type Props = { info: Publication };
 //MAIN FC
@@ -41,14 +35,11 @@ export default function Pub({ info }: Props) {
   //HOOKS
   const { data: session } = useSession();
   const queryClient = useQueryClient();
-  const { setData: setComments, clearData: clearComments, comments } = useCommentsBox();
-  const [opts, setOpts] = useState(false);
-  const [delLoader, setDelLoader] = useState(false);
-  const [likes, setLikes] = useState(info.likes.length);
-  const [likesDissable, setLikesDissable] = useState(false);
-
+  const [opts, setOpts] = useState<boolean>(false);
+  const [delLoader, setDelLoader] = useState<boolean>(false);
+  //MODAL IMAGE VIEWER
   const { setData: setImageData } = useImageViewer();
-
+  //FCs AND HANDLERS
   async function deletePub() {
     if (info.author !== session?.user?.name) return;
     if (!confirm("Seguro que desea eliminar esto?")) return;
@@ -75,15 +66,19 @@ export default function Pub({ info }: Props) {
     setOpts(false);
     setDelLoader(false);
     if (res.message == "OK") {
-      queryClient.invalidateQueries({ queryKey: ['pubs'] });
-      toast.success('Publicación eliminada con éxito!');
+      queryClient.invalidateQueries({ queryKey: ["pubs"] });
+      toast.success("Publicación eliminada con éxito!");
     } else {
       toast.error("No se pudo eliminar el post");
     }
   }
   function detectImg(txt: string) {
     if (!/^https.+(png|jpg|jpeg|avif|webm|bmp|gif)$/i.test(txt)) {
-      return <p className="mt-2 rounded-lg font-bold text-[var(--secondaryTextLight)]">{txt}</p>;
+      return (
+        <p className="mt-2 rounded-lg font-bold text-[#222]">
+          {txt}
+        </p>
+      );
     } else {
       return (
         <div className="w-full">
@@ -104,6 +99,7 @@ export default function Pub({ info }: Props) {
       style={{ cornerShape: "squircle", borderRadius: "1rem" }}
       className={`mb-3 inline-block w-full ${info.vip ? vip : normal} shadow-lg`}
     >
+      {/* CARD HEADER */}
       <div className="flex items-center justify-between py-2 pl-2 pr-4">
         <CardHeader pub={info} pubDate={<RelativeTime date={info.date} />} />
         {/* ACTIONS */}
@@ -152,7 +148,9 @@ export default function Pub({ info }: Props) {
           />
         </div>
       </div>
+      {/* CARD BODY */}
       <div id="body">
+        {/* TITLE DESCRIPTION */}
         <div id="contentTxt" className="py-4 px-4">
           <h2
             //@ts-ignore
@@ -163,6 +161,7 @@ export default function Pub({ info }: Props) {
           </h2>
           {info?.description && detectImg(info.description)}
         </div>
+        {/* IMAGES */}
         {info?.image && (
           <div className="w-full flex">
             <button
@@ -177,7 +176,9 @@ export default function Pub({ info }: Props) {
             </button>
           </div>
         )}
+        {/* YOUTUBE VIDEO */}
         {info?.yt && <YtPlayer link={info.yt} />}
+        {/* AUDIO */}
         {info?.audio && (
           <audio
             src={info.audio}
@@ -187,47 +188,13 @@ export default function Pub({ info }: Props) {
         )}
       </div>
       {/* SOCIAL ACTIONS */}
-      <div className="flex items-center justify-around py-3 rounded-b-lg">
-        <div className="flex gap-3">
-          <FaRegThumbsUp
-            onClick={async () => {
-              if (likesDissable) return;
-              const res = await like(info._id);
-              if (res.message == "OK") {
-                console.log(res);
-                setLikes((prev) => prev + 1);
-              } else {
-                setLikesDissable(true);
-              }
-            }}
-            color={secondaryTextLight}
-            size={20}
-            className={`cursor-pointer hover:animate-pulse ${
-              likesDissable ? "pointer-events-none" : ""
-            }`}
-          />
-          <p className="font-bold text-[var(--secondaryTextLight)]">{likes}</p>
-        </div>
-        <div className="flex gap-3">
-          <FaRegStar
-            color={secondaryTextLight}
-            size={20}
-            className="cursor-pointer hover:animate-pulse"
-          />
-          <p className="font-bold text-[var(--secondaryTextLight)]">0</p>
-        </div>
-        <div className="flex gap-3">
-          <FaRegComment
-            onClick={() => {
-              comments.length > 0 ? clearComments() : setComments(info.comments, info._id.toString())
-            }}
-            color={secondaryTextLight}
-            size={20}
-            className="cursor-pointer hover:animate-pulse"
-          />
-          <p className="font-bold text-[var(--secondaryTextLight)]">{info?.comments?.length}</p>
-        </div>
-      </div>
+      <SocialActions data={{
+        PubId: info._id,
+        likesCount: info.likes.length,
+        favsCount: info.favourite,
+        comments: info.comments,
+        isAuth: Boolean(session?.user?.email)
+      }}/>
     </article>
   );
 }

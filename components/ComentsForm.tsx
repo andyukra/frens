@@ -86,7 +86,7 @@ export default function ComentsForm({ pubId, cb }: Props) {
       {status == "authenticated" && (
         <form
           onSubmit={handleSubmit}
-          className="w-[97%] mx-auto flex gap-4 items-center pt-2"
+          className="w-full flex gap-x-3 px-2 justify-between items-center"
         >
           <Turnstile
             siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}

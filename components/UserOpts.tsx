@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import {
   FaPowerOff,
   FaAddressCard,
-  FaHouse,
+  FaStar,
+  FaHouse
 } from "react-icons/fa6";
 
 type Props = {
@@ -32,6 +33,16 @@ export default function UserOpts({ username, cbClose, cbSignOut }: Props) {
         >
           <p className="text-black font-bold text-lg">Dashboard</p>
           <FaAddressCard color="black" size={20} />
+        </li>
+        <li
+          onClick={() => {
+			cbClose();
+            router.push("/favourites");
+          }}
+          className="flex justify-between items-center rounded bg-slate-100 px-4 py-2 cursor-pointer hover:bg-slate-300"
+        >
+          <p className="text-black font-bold text-lg">Mis favoritos</p>
+          <FaStar color="black" size={20} />
         </li>
         <li
           onClick={() => {

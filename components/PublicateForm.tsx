@@ -88,7 +88,7 @@ export default function PublicateForm({ type }:Props) {
       onSubmit={handleSubmit}
       //@ts-ignore
       style={{cornerShape: 'squircle', borderRadius: '1rem'}}
-      className="p-5 bg-[#000d] text-whit  flex flex-col justify-center items-center gap-5 md:w-6/12 w-full"
+      className="p-5 bg-[#fafafa] shadow-xl text-whit  flex flex-col justify-center items-center gap-5 md:w-6/12 w-full"
     >
       <input type="text" defaultValue={type} hidden name="type"/>
       <hr />
@@ -112,9 +112,9 @@ export default function PublicateForm({ type }:Props) {
                 alt="preview selected image"
               />
             ) : (
-              <FaImage color={"white"} size={100} />
+              <FaImage color={"#FA7268"} size={100} />
             )}
-            <p className="mt-2 text-white font-bold">Elegir imágen (4.5 MB màximo)</p>
+            <p className="mt-2 font-bold text-[gray]">Elegir imágen (4.5 MB màximo)</p>
           </label>
         </>
       )}
@@ -123,7 +123,7 @@ export default function PublicateForm({ type }:Props) {
         maxLength={50}
         minLength={1}
         name="title"
-        className={`w-full px-4 py-2 text-slate-950 focus:outline-none`}
+        className={`w-full px-4 py-2 text-slate-950 bg-slate-100 focus:outline-none`}
         type="text"
         placeholder="Título"
         //@ts-ignore
@@ -132,15 +132,16 @@ export default function PublicateForm({ type }:Props) {
       {type === "video" && (
         <>
           <input
-            className="rounded-lg shadow w-full px-4 py-2 text-slate-950 focus:outline-none"
+            className="rounded-lg w-full px-4 py-2 text-slate-950 bg-slate-100 focus:outline-none"
             type="url"
             required
             minLength={1}
             maxLength={250}
             name="yt"
             placeholder="https://youtu.be/....."
+            autoComplete="off"
           />
-          <FaYoutube color={"white"} size={100} />
+          <FaYoutube color={"red"} size={100} />
         </>
       )}
       {type !== "video" && (
@@ -150,7 +151,7 @@ export default function PublicateForm({ type }:Props) {
           minLength={1}
           //@ts-ignore
           style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
-          className={`resize-none w-full px-4 py-2 text-slate-950 focus:outline-none`}
+          className={`resize-none w-full px-4 py-2 text-slate-950 bg-slate-100 focus:outline-none`}
           rows={3}
           name="description"
           placeholder="Descripción"
@@ -169,7 +170,7 @@ export default function PublicateForm({ type }:Props) {
             className="cursor-pointer flex flex-col justify-center items-center"
             htmlFor="upAudio"
           >
-            <FaHeadphones color={"white"} size={100} />
+            <FaHeadphones className={`${file ? "animate-bounce" : ""}`} color={file ? "green" : "#FA7268"} size={100} />
             <p className="mt-2 font-bold">
               Elegir Audio (.mp3 .wav .ogg) (4.5 MB màximo)
             </p>
@@ -180,8 +181,8 @@ export default function PublicateForm({ type }:Props) {
         disabled={isLoading}
         type="submit"
         //@ts-ignore
-        style={{cornerShape: 'squircle', borderRadius: '0.5rem'}}
-        className={`text-white px-4 py-2 font-bold w-full flex justify-center ring-2 ring-yellow-200 hover:bg-green-800 transition`}
+        style={{cornerShape: 'squircle', borderRadius: '0.7rem'}}
+        className={`px-4 py-2 font-bold gradient w-full flex justify-center text-white`}
       >
         {isLoading ? (
           <FaSpinner className="animate-spin" color={"white"} size={35} />

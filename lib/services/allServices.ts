@@ -233,7 +233,7 @@ export default {
       await dbAdapter.addFavourite(pubId, user.name);
       return { message: "OK" };
     } catch (error) {
-      return { errors: "Error al agregar favorito" };
+      return { errors: error instanceof Error ? error.message : "Error al agregar favorito"  };
     }
   },
   async delFavourite(pubId: string): Promise<ResponseGeneric> {
@@ -257,12 +257,11 @@ export default {
     if (blockeds.includes(user.email)) return { errors: "Sin autorización" };
     //GET ADAPTER AND GO PROCES
     const dbAdapter = DbFactory(process.env.DB_TYPE);
-
     try {
       const favourites = await dbAdapter.getFavourites(user.name);
       return { message: JSON.stringify(favourites) };
     } catch (error) {
-      return { errors: "Error al obtener favoritos" };
+      return { errors: error instanceof Error ? error.message : "Error al obtener favoritos" };
     }
   },
   async getAvatars(limit: number): Promise<ResponseAvatars> {

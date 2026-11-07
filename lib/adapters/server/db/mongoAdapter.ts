@@ -111,7 +111,7 @@ export default function (): DbAdapter {
           ).session(session);
           //INC PUB FAVOURITES COUNT
           const pubResult = await PubModel.updateOne(
-            { id: pubId },
+            { _id: pubId },
             { $inc: { favourite: 1 } },
           ).session(session);
           if (pubResult.matchedCount === 0)
@@ -221,7 +221,7 @@ export default function (): DbAdapter {
     getFavourites: async (username: string): Promise<Publication[]> => {
       await db();
       // 1. Buscamos el usuario para obtener su array de favoritos
-      const user = await UserModel.findById(username).select("favourites");
+      const user = await UserModel.findOne({name: username}).select("favourites");
 
       if (!user || !user.favourites || user.favourites.length === 0) {
         return []; // Si no tiene favoritos, devolvemos un array vacío
