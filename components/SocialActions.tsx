@@ -17,11 +17,12 @@ type Data = {
   favsCount: number;
   isAuth: boolean;
   comments: Comment[];
+  vip: boolean
 };
 type Props = { data: Data };
 //MAIN COMPONENT
 export default function SocialActions({
-  data: { likesCount, favsCount, isAuth, comments, PubId },
+  data: { likesCount, favsCount, isAuth, comments, PubId, vip },
 }: Props) {
   // ************** H O O K S ********************
   //MODAL COMMENTS
@@ -89,14 +90,14 @@ export default function SocialActions({
             if (!isAuth) return;
             mutateLike();
           }}
-          color={isLiked ? "#C62368" : "#222"}
+          color={isLiked ? "#C62368" : vip ? "#fff" : "#222"}
           size={20}
           className={`cursor-pointer hover:animate-pulse ${
             (!isAuth || disabledLikes) ? "pointer-events-none" : ""
           }`}
         />
         <p
-          className={`font-bold ${isLiked ? "text-[var(--secondary)]" : 'text-["#222"]'}`}
+          className={`font-bold ${isLiked ? "text-[var(--secondary)]" : vip ? 'text-white' : 'text-["#222"]'}`}
         >
           {likes}
         </p>
@@ -104,7 +105,7 @@ export default function SocialActions({
       {/*FAVOURITES*/}
       <div className="flex gap-3">
         <FaRegStar
-          color={isFavourited ? "#C62368" : "#222"}
+          color={isFavourited ? "#C62368" : vip ? "#fff" : "#222"}
           size={20}
           className={`cursor-pointer hover:animate-pulse ${
             (!isAuth || disabledFavourites) ? "pointer-events-none" : ""
@@ -114,17 +115,17 @@ export default function SocialActions({
             mutateAddFav();
           }}
         />
-        <p className={`font-bold ${isFavourited ? "text-[var(--secondary)]" : 'text-["#222"]'}`}>{favourites}</p>
+        <p className={`font-bold ${isFavourited ? "text-[var(--secondary)]" : vip ? 'text-white' : 'text-["#222"]'}`}>{favourites}</p>
       </div>
       {/*COMMENTS*/}
       <div className="flex gap-3">
         <FaRegComment
           onClick={() => setComments(comments, PubId.toString())}
-          color={"#222"}
+          color={vip ? "#fff" : "#222"}
           size={20}
           className="cursor-pointer hover:animate-pulse"
         />
-        <p className="font-bold text-[#222]">{comments.length}</p>
+        <p className={`font-bold ${vip ? 'text-white' : 'text-[#222]'}`}>{comments.length}</p>
       </div>
     </div>
   );

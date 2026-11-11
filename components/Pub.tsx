@@ -101,7 +101,7 @@ export default function Pub({ info }: Props) {
     >
       {/* CARD HEADER */}
       <div className="flex items-center justify-between py-2 pl-2 pr-4">
-        <CardHeader pub={info} pubDate={<RelativeTime date={info.date} />} />
+        <CardHeader pub={info} pubDate={<RelativeTime date={info.date} vip={info.vip}/>} />
         {/* ACTIONS */}
         <div className="relative">
           {opts && (
@@ -142,7 +142,7 @@ export default function Pub({ info }: Props) {
           )}
           <FaEllipsis
             onClick={() => setOpts(!opts)}
-            color="black"
+            color={info.vip ? "white" : "black"}
             size={25}
             className="cursor-pointer"
           />
@@ -155,7 +155,7 @@ export default function Pub({ info }: Props) {
           <h2
             //@ts-ignore
             style={{ cornerShape: "squircle", borderRadius: "0.5rem" }}
-            className={`${nunito.className} font-[900] text-[var(--primaryTextLight)] text-xl`}
+            className={`${nunito.className} font-[900] ${info.vip ? "text-white" : "text-[var(--primaryTextLight)]"} text-xl`}
           >
             {info.title}
           </h2>
@@ -193,7 +193,8 @@ export default function Pub({ info }: Props) {
         likesCount: info.likes.length,
         favsCount: info.favourite,
         comments: info.comments,
-        isAuth: Boolean(session?.user?.email)
+        isAuth: Boolean(session?.user?.email),
+        vip: info.vip
       }}/>
     </article>
   );

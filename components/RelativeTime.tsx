@@ -9,8 +9,10 @@ moment.locale("es");
 
 export default function RelativeTime({
   date,
+  vip
 }: {
   date: string | Date;
+  vip: boolean
 }) {
   const [text, setText] = useState("");
 
@@ -18,5 +20,5 @@ export default function RelativeTime({
     setText(moment(date).fromNow());
   }, [date]);
 
-  return <p className="text-sm text-[var(--secondaryTextLight)]">{text || ""}</p>;
+  return <p className={`text-sm ${vip ? "text-white" : "text-[var(--secondaryTextLight)]"}`}>{text || ""}</p>;
 }

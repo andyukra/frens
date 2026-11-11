@@ -1,5 +1,5 @@
 
-type Data = { avatar: string , author: string };
+type Data = { avatar: string , author: string, vip: boolean };
 type Props = { pub: Data, pubDate: React.ReactNode }
 
 export default function CardHeader({pub, pubDate}: Props) {
@@ -12,7 +12,7 @@ export default function CardHeader({pub, pubDate}: Props) {
           className="rounded-full shadow w-10 h-10"
         />
         <div>
-          <h2 className="text-lg font-bold">{pub.author}</h2>
+          <h2 className={`text-lg font-bold ${pub.vip ? 'text-white' : 'text-[#222]'}`}>{pub.author}</h2>
           {pubDate}
         </div>
       </div>
