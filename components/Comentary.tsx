@@ -1,7 +1,6 @@
 'use client';
 import moment from "moment";
 import { useImageViewer } from '@/lib/stores/dialogs';
-import React from 'react';
 //COMPONENTS
 import CardHeader from "@/components/CardHeader";
 

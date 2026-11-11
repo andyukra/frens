@@ -1,15 +1,21 @@
 "use client";
 import { FaTimes } from "react-icons/fa";
 import { useImageViewer } from "@/lib/stores/dialogs";
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
+//GLOBAL VARS
+let scrollY: number = 0;
 //MAIN FC
 export default function ImageViewer() {
   const { url, alt, clearData } = useImageViewer();
-  useEffect(() => {
+  useLayoutEffect(() => {
     if(url) {
+      scrollY = window.scrollY;
       document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
     } else {
-      document.body.style.position = 'static';
+      document.body.style.position = '';
+      window.scrollTo(0, scrollY);
+      scrollY = 0;
     }
   }, [url]);
   return (

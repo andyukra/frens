@@ -1,5 +1,5 @@
 
-type Data = { avatar: string , author: string, vip: boolean };
+type Data = { avatar: string , author: string, vip?: boolean };
 type Props = { pub: Data, pubDate: React.ReactNode }
 
 export default function CardHeader({pub, pubDate}: Props) {
